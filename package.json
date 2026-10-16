@@ -1,0 +1,11 @@
+{
+  "name": "my-userstyles",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bundle": "node tools/build-bundle.mjs"
+  },
+  "devDependencies": {
+    "usercss-meta": "^0.12.0"
+  }
+}

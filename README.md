@@ -15,6 +15,12 @@
 With Stylus installed, opening a link shows the install page. Installed styles update themselves from this
 repo: Stylus checks each style's `@updateURL` and installs the new file when its `@version` is higher.
 
+### Install all at once
+
+Download [stylus-import.json](https://raw.githubusercontent.com/MattAnderko/my-userstyles/main/stylus-import.json)
+(right click, save link as), then in Stylus open **Manage → Import** and pick the file. All styles are installed
+with their default options and keep updating from this repo like individually installed ones.
+
 ## Flavour and accent
 
 Each style has its options in Stylus (the cog next to the style): flavour (Latte, Frappé, Macchiato, Mocha) and
@@ -30,11 +36,13 @@ the comment at the top of each file explains what each role is for.
 
 ## Working on the styles
 
-Enable the hook once per clone:
+Once per clone:
 
 ```sh
 git config core.hooksPath .githooks
+npm install
 ```
 
-On commit it raises the patch version of every changed style, so Stylus picks the change up. Styles under
+On commit the hook raises the patch version of every changed style, so Stylus picks the change up, and
+rebuilds `stylus-import.json` (`npm run bundle` does that by hand). Styles under
 `google` and `chatgpt` are based on [catppuccin/userstyles](https://github.com/catppuccin/userstyles) (MIT).

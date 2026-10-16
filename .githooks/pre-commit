@@ -37,3 +37,12 @@ for path in staged:
         f.write(text)
     git("add", path)
     print(f"{path}: @version {bumped}")
+
+# Keep the bulk-import file in step with the styles it carries.
+if staged:
+    import os
+    if os.path.isdir("node_modules/usercss-meta"):
+        subprocess.run(["node", "tools/build-bundle.mjs"], check=True)
+        git("add", "stylus-import.json")
+    else:
+        print("stylus-import.json not rebuilt: run `npm install` once in this repo")
