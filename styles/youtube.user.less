@@ -1,0 +1,1397 @@
+/* ==UserStyle==
+@name           YouTube Catppuccin
+@namespace      github.com/MattAnderko/my-userstyles
+@homepageURL    https://github.com/MattAnderko/my-userstyles
+@supportURL     https://github.com/MattAnderko/my-userstyles/issues
+@updateURL      https://raw.githubusercontent.com/MattAnderko/my-userstyles/main/styles/youtube.user.less
+@version        1.0.0
+@author         Máté Anderko
+@description    Catppuccin for YouTube, covering the yt-sys tokens, player and watch page
+@license        MIT
+@preprocessor   less
+@var select flavor "Flavor" ["latte:Latte", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha*"]
+@var select accentColor "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "blue:Blue*", "sapphire:Sapphire", "sky:Sky", "lavender:Lavender"]
+==/UserStyle== */
+
+/*
+  Colours
+  -------
+  Every rule below uses the 26 Catppuccin roles as CSS variables (--ctp-base, --ctp-text,
+  --ctp-surface0, ...) plus --ctp-accent. They are set once, in the #palette mixin at the top
+  of the @-moz-document block, from the Catppuccin library: pick the flavour and accent in
+  Stylus's style settings.
+
+  Using another theme (Gruvbox, Nord, Tokyo Night, ...): replace the body of #palette with your
+  own colours for the same roles, e.g.
+
+    #palette() {
+      --ctp-base: #282828;   --ctp-mantle: #1d2021;  --ctp-crust: #141617;
+      --ctp-surface0: #3c3836; --ctp-surface1: #504945; --ctp-surface2: #665c54;
+      --ctp-overlay0: #7c6f64; --ctp-overlay1: #928374; --ctp-overlay2: #a89984;
+      --ctp-subtext0: #bdae93; --ctp-subtext1: #d5c4a1; --ctp-text: #ebdbb2;
+      --ctp-accent: #83a598;  ...and the accents (red, green, yellow, blue, mauve, ...)
+    }
+
+  base/mantle/crust are the page backgrounds (mantle and crust darker), surface0-2 raised
+  surfaces and borders, overlay0-2 muted text, subtext/text the text colours.
+*/
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("www.youtube.com") {
+
+  :root {
+    #palette();
+  }
+
+  #palette() {
+    #lib.palette();
+    #lib.css-variables();
+    --ctp-accent: @accent;
+  }
+
+
+  /* YouTube's colour tokens: the yt-sys set it reads today, the older yt-spec / yt-deprecated names,
+     live chat, Polymer paper widgets and the hashed --t* aliases. YouTube also sets them on nested
+     [dark]/[light] elements, so those are matched too. Generated from YouTube's own stylesheets. */
+  :root,
+  [dark],
+  [light],
+  [darker-dark-theme],
+  [system-icons],
+  [color-version] {
+    color-scheme: dark !important;
+    --yt-live-chat-action-panel-renderer-fallback-background-color: var(--ctp-surface0) !important;
+    --yt-live-chat-poll-choice-vote-bar-color: var(--ctp-surface1) !important;
+    --yt-live-chat-action-panel-background-color-transparent: color-mix(in srgb, var(--ctp-surface0) 80%, transparent) !important;
+    --yt-live-chat-secondary-background-color: var(--ctp-surface0) !important;
+    --yt-live-chat-toast-background-color: var(--ctp-surface1) !important;
+    --yt-live-chat-mode-change-background-color: var(--ctp-surface1) !important;
+    --yt-live-chat-secondary-text-color: color-mix(in srgb, var(--ctp-text) 70%, transparent) !important;
+    --yt-live-chat-tertiary-text-color: color-mix(in srgb, var(--ctp-text) 54%, transparent) !important;
+    --yt-live-chat-text-input-field-inactive-underline-color: var(--ctp-overlay0) !important;
+    --yt-live-chat-text-input-field-placeholder-color: var(--ctp-overlay0) !important;
+    --yt-live-chat-enabled-send-button-color: var(--ctp-text) !important;
+    --yt-live-chat-disabled-icon-button-color: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-live-chat-picker-button-hover-color: color-mix(in srgb, var(--ctp-text) 74%, transparent) !important;
+    --yt-live-chat-mention-background-color: var(--ctp-red) !important;
+    --yt-live-chat-mention-text-color: var(--ctp-text) !important;
+    --yt-live-chat-deleted-message-color: color-mix(in srgb, var(--ctp-text) 50%, transparent) !important;
+    --yt-live-chat-deleted-message-bar-color: color-mix(in srgb, var(--ctp-text) 50%, transparent) !important;
+    --yt-live-chat-reconnect-message-color: var(--ctp-text) !important;
+    --yt-live-chat-disabled-button-background-color: var(--ctp-surface1) !important;
+    --yt-live-chat-moderator-color: var(--ctp-accent) !important;
+    --yt-live-chat-owner-color: var(--ctp-yellow) !important;
+    --yt-live-chat-sponsor-color: var(--ctp-green) !important;
+    --yt-live-chat-overlay-color: color-mix(in srgb, var(--ctp-crust) 50%, transparent) !important;
+    --yt-live-chat-dialog-background-color: var(--ctp-surface1) !important;
+    --yt-emoji-picker-variant-selector-bg-color: var(--ctp-surface1) !important;
+    --yt-live-chat-moderation-mode-hover-background-color: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-live-chat-text-input-field-suggestion-background-color: var(--ctp-surface1) !important;
+    --yt-live-chat-text-input-field-suggestion-background-color-hover: var(--ctp-surface1) !important;
+    --yt-emoji-picker-search-background-color: var(--ctp-surface1) !important;
+    --yt-emoji-picker-search-color: var(--ctp-text) !important;
+    --yt-emoji-picker-search-placeholder-color: var(--ctp-subtext0) !important;
+    --yt-live-chat-slider-active-color: var(--ctp-accent) !important;
+    --yt-live-chat-slider-container-color: var(--ctp-surface2) !important;
+    --yt-live-chat-slider-markers-color: var(--ctp-text) !important;
+    --yt-live-chat-automod-button-background-color-hover: color-mix(in srgb, var(--ctp-text) 50%, transparent) !important;
+    --yt-live-chat-automod-button-explanation-color: color-mix(in srgb, var(--ctp-text) 70%, transparent) !important;
+    --yt-live-chat-shimmer-background-color: color-mix(in srgb, var(--ctp-base) 40%, transparent) !important;
+    --yt-live-chat-vem-background-color: var(--ctp-surface1) !important;
+    --yt-live-chat-product-picker-icon-color: color-mix(in srgb, var(--ctp-text) 50%, transparent) !important;
+    --yt-live-chat-product-picker-hover-color: var(--ctp-surface1) !important;
+    --yt-live-chat-product-picker-disabled-icon-color: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --ytd-searchbox-legacy-button-icon-color: var(--ctp-text) !important;
+    --ytd-searchbox-border-color: var(--ctp-surface1) !important;
+    --ytd-searchbox-legacy-border-color: var(--ctp-surface1) !important;
+    --ytd-searchbox-legacy-border-shadow-color: transparent !important;
+    --ytd-searchbox-legacy-button-color: var(--ctp-surface0) !important;
+    --ytd-searchbox-legacy-button-border-color: var(--ctp-surface1) !important;
+    --ytd-searchbox-legacy-button-focus-color: var(--ctp-surface1) !important;
+    --ytd-searchbox-legacy-button-hover-color: var(--ctp-surface1) !important;
+    --ytd-searchbox-legacy-button-hover-border-color: var(--ctp-surface1) !important;
+    --ytd-searchbox-background: var(--ctp-base) !important;
+    --ytd-searchbox-text-color: var(--ctp-text) !important;
+    --yt-sys-color-baseline--static-ad-yellow: var(--ctp-yellow) !important;
+    --yt-sys-color-baseline--background-warning: color-mix(in srgb, var(--ctp-peach) 21%, transparent) !important;
+    --yt-sys-color-baseline--background-complete: color-mix(in srgb, var(--ctp-green) 21%, transparent) !important;
+    --yt-sys-color-baseline--text-warning: var(--ctp-peach) !important;
+    --yt-sys-color-baseline--text-complete: var(--ctp-green) !important;
+    --yt-sys-color-baseline--text-error: var(--ctp-red) !important;
+    --yt-sys-color-baseline--base-background: var(--ctp-base) !important;
+    --yt-sys-color-baseline--raised-background: var(--ctp-surface0) !important;
+    --yt-sys-color-baseline--menu-background: var(--ctp-mantle) !important;
+    --yt-sys-color-baseline--inverted-background: var(--ctp-text) !important;
+    --yt-sys-color-baseline--inverted-background-hover: var(--ctp-subtext1) !important;
+    --yt-sys-color-baseline--additive-background: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--additive-background-inverse: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --yt-sys-color-baseline--outline: var(--ctp-surface0) !important;
+    --yt-sys-color-baseline--outline-inverse: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --yt-sys-color-baseline--outline-wash: transparent !important;
+    --yt-sys-color-baseline--text-primary: var(--ctp-text) !important;
+    --yt-sys-color-baseline--text-secondary: var(--ctp-subtext0) !important;
+    --yt-sys-color-baseline--text-disabled: var(--ctp-overlay1) !important;
+    --yt-sys-color-baseline--text-primary-inverse: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--text-secondary-inverse: var(--ctp-surface2) !important;
+    --yt-sys-color-baseline--text-disabled-inverse: var(--ctp-overlay0) !important;
+    --yt-sys-color-baseline--call-to-action: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--call-to-action-inverse: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--suggested-action: color-mix(in srgb, var(--ctp-accent) 22%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--suggested-action-inverse: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--touch-response: var(--ctp-text) !important;
+    --yt-sys-color-baseline--touch-response-inverse: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--red-indicator: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--wordmark-text: var(--ctp-text) !important;
+    --yt-sys-color-baseline--error-indicator: var(--ctp-red) !important;
+    --yt-sys-color-baseline--error-indicator-inverse: var(--ctp-red) !important;
+    --yt-sys-color-baseline--error-background-red: color-mix(in srgb, var(--ctp-red) 20%, transparent) !important;
+    --yt-sys-color-baseline--themed-green: var(--ctp-green) !important;
+    --yt-sys-color-baseline--themed-green-inverse: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--themed-overlay-background: color-mix(in srgb, var(--ctp-crust) 80%, transparent) !important;
+    --yt-sys-color-baseline--brand-red-contrast: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--genai-1: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--genai-2: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--genai-3: var(--ctp-mauve) !important;
+    --yt-sys-color-baseline--genai-4: var(--ctp-red) !important;
+    --yt-sys-color-baseline--genai-1-additive: color-mix(in srgb, var(--ctp-teal) 10.5%, transparent) !important;
+    --yt-sys-color-baseline--genai-2-additive: color-mix(in srgb, var(--ctp-mauve) 10.5%, transparent) !important;
+    --yt-sys-color-baseline--genai-3-additive: color-mix(in srgb, var(--ctp-mauve) 30%, transparent) !important;
+    --yt-sys-color-baseline--genai-4-additive: color-mix(in srgb, var(--ctp-red) 30%, transparent) !important;
+    --yt-sys-color-baseline--feed-vibrant-gradient1: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--feed-vibrant-gradient2: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--feed-vibrant-gradient3: var(--ctp-red) !important;
+    --yt-sys-color-baseline--outline-opaque: var(--ctp-surface1) !important;
+    --yt-sys-color-baseline--outline-inverse-opaque: var(--ctp-overlay0) !important;
+    --yt-sys-color-baseline--shadow-medium: color-mix(in srgb, var(--ctp-crust) 25%, transparent) !important;
+    --yt-sys-color-baseline--frosted-glass-mobile: color-mix(in srgb, var(--ctp-base) 75%, transparent) !important;
+    --yt-sys-color-baseline--frosted-glass-desktop: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important;
+    --yt-sys-color-baseline--mono-filled-hover: var(--ctp-subtext1) !important;
+    --yt-sys-color-baseline--mono-filled-hover-inverse: var(--ctp-surface1) !important;
+    --yt-sys-color-baseline--button-chip-background-hover: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--mono-tonal-hover: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--mono-tonal-hover-inverse: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --yt-sys-color-baseline--call-to-action-hover: var(--ctp-lavender) !important;
+    --yt-sys-color-baseline--suggested-action-hover: color-mix(in srgb, var(--ctp-accent) 32%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--solid-background: var(--ctp-text) !important;
+    --yt-sys-color-baseline--solid-background-inverse: var(--ctp-base) !important;
+    --yt-sys-color-baseline--solid-rim: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--solid-rim-inverse: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--solid-wash: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--solid-wash-inverse: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--tonal-background: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--tonal-background-inverse: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --yt-sys-color-baseline--tonal-rim: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--tonal-rim-inverse: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --yt-sys-color-baseline--tonal-wash: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --yt-sys-color-baseline--tonal-wash-inverse: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--outline-rim: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--outline-rim-inverse: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--icon-warning: var(--ctp-yellow) !important;
+    --yt-sys-color-baseline--red-3: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--red-4: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--blue-1: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--blue-2: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--blue-3: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--blue-4: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--blue-5: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--blue-6: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--blue-7: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--purple-6: var(--ctp-mauve) !important;
+    --yt-sys-color-baseline--green-6: var(--ctp-green) !important;
+    --yt-sys-color-baseline--grey-4: var(--ctp-subtext1) !important;
+    --yt-sys-color-baseline--grey-6: var(--ctp-text) !important;
+    --yt-sys-color-baseline--state-mono-filled-hovered: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --yt-sys-color-baseline--state-mono-filled-pressed: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --yt-sys-color-baseline--state-mono-standard-hovered: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --yt-sys-color-baseline--state-mono-standard-pressed: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--state-overlay-filled-hovered: color-mix(in srgb, var(--ctp-crust) 20%, transparent) !important;
+    --yt-sys-color-baseline--state-overlay-filled-pressed: color-mix(in srgb, var(--ctp-crust) 30%, transparent) !important;
+    --yt-sys-color-baseline--state-overlay-standard-hovered: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --yt-sys-color-baseline--state-overlay-standard-pressed: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --yt-sys-color-baseline--static-white-background: var(--ctp-text) !important;
+    --yt-sys-color-baseline--static-black: var(--ctp-base) !important;
+    --yt-sys-color-baseline--static-brand-red: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--static-brand-white: var(--ctp-text) !important;
+    --yt-sys-color-baseline--static-brand-black: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--static-clear-color: transparent !important;
+    --yt-sys-color-baseline--static-clear-black: transparent !important;
+    --yt-sys-color-baseline--static-grey: var(--ctp-overlay0) !important;
+    --yt-sys-color-baseline--static-dark-grey: var(--ctp-surface1) !important;
+    --yt-sys-color-baseline--static-magenta: var(--ctp-lavender) !important;
+    --yt-sys-color-baseline--overlay-additive-background: color-mix(in srgb, var(--ctp-surface0) 60%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-solid: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--overlay-background-heavy: color-mix(in srgb, var(--ctp-crust) 80%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-medium: color-mix(in srgb, var(--ctp-crust) 60%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-medium-light: color-mix(in srgb, var(--ctp-crust) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-medium-heavy: color-mix(in srgb, var(--ctp-crust) 40%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-light: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-extra-light: color-mix(in srgb, var(--ctp-crust) 3%, transparent) !important;
+    --yt-sys-color-baseline--overlay-text-primary: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-text-secondary: color-mix(in srgb, var(--ctp-text) 70%, transparent) !important;
+    --yt-sys-color-baseline--overlay-text-disabled: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-call-to-action: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--overlay-button-secondary: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--overlay-button-primary: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-background-brand: color-mix(in srgb, var(--ctp-accent) 90%, transparent) !important;
+    --yt-sys-color-baseline--overlay-touch-response: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-touch-response-inverse: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--overlay-call-to-action-hover: var(--ctp-lavender) !important;
+    --yt-sys-color-baseline--overlay-text-primary-inverse: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--overlay-filled-hover: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-tonal-hover: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--overlay-outline: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-outline-inverse: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-outline-rim: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--overlay-outline-rim-inverse: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--overlay-solid-background: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-solid-background-inverse: var(--ctp-base) !important;
+    --yt-sys-color-baseline--overlay-solid-rim: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--overlay-solid-rim-inverse: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--overlay-solid-wash: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-solid-wash-inverse: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-background: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-background-inverse: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-rim: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-rim-inverse: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-wash: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-wash-inverse: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--assistive-feed-vibrant-gradient-1: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--assistive-feed-vibrant-gradient-2: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--assistive-feed-vibrant-gradient-3: var(--ctp-red) !important;
+    --yt-sys-color-baseline--assistive-feed-themed-gradient-1: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--assistive-feed-themed-gradient-2: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--assistive-feed-themed-gradient-3: color-mix(in srgb, var(--ctp-red) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--scrim-background-gradient-1: transparent !important;
+    --yt-sys-color-baseline--scrim-background-gradient-2: color-mix(in srgb, var(--ctp-base) 30%, transparent) !important;
+    --yt-sys-color-baseline--scrim-background-gradient-3: color-mix(in srgb, var(--ctp-base) 60%, transparent) !important;
+    --yt-sys-color-baseline--scrim-background-gradient-4: color-mix(in srgb, var(--ctp-base) 90%, transparent) !important;
+    --yt-sys-color-baseline--scrim-background-gradient-5: var(--ctp-base) !important;
+    --yt-deprecated-overlay-icon-active-other: var(--ctp-text) !important;
+    --yt-deprecated-paper-tab-ink: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-deprecated-general-background-a: var(--ctp-base) !important;
+    --yt-deprecated-general-background-b: var(--ctp-base) !important;
+    --yt-deprecated-general-background-c: var(--ctp-crust) !important;
+    --yt-sys-color-baseline--add-on-green-base-background: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-green-primary: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-green-text-primary: var(--ctp-green) !important;
+    --yt-sys-color-baseline--add-on-magenta-base-background: var(--ctp-pink) !important;
+    --yt-sys-color-baseline--add-on-magenta-primary: var(--ctp-pink) !important;
+    --yt-sys-color-baseline--add-on-magenta-text-primary: var(--ctp-pink) !important;
+    --yt-sys-color-baseline--add-on-orange-base-background: color-mix(in srgb, var(--ctp-red) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-orange-primary: var(--ctp-red) !important;
+    --yt-sys-color-baseline--add-on-orange-text-primary: var(--ctp-red) !important;
+    --yt-sys-color-baseline--add-on-purple-base-background: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-purple-primary: var(--ctp-mauve) !important;
+    --yt-sys-color-baseline--add-on-purple-text-primary: var(--ctp-mauve) !important;
+    --yt-sys-color-baseline--add-on-red-base-background: color-mix(in srgb, var(--ctp-red) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-red-primary: var(--ctp-red) !important;
+    --yt-sys-color-baseline--add-on-red-text-primary: var(--ctp-red) !important;
+    --yt-sys-color-baseline--add-on-teal-base-background: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-teal-primary: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-sys-color-baseline--add-on-teal-text-primary: var(--ctp-green) !important;
+    --yt-sys-color-baseline--filled-hover-light: var(--ctp-text) !important;
+    --yt-sys-color-baseline--filled-state-layer: var(--ctp-text) !important;
+    --yt-sys-color-baseline--filled-touch-light: var(--ctp-text) !important;
+    --yt-sys-color-baseline--frost-container-heavy: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important;
+    --yt-sys-color-baseline--frost-container-medium: color-mix(in srgb, var(--ctp-base) 60%, transparent) !important;
+    --yt-sys-color-baseline--frost-container-semi-heavy: color-mix(in srgb, var(--ctp-base) 75%, transparent) !important;
+    --yt-sys-color-baseline--keyboard-background: var(--ctp-surface0) !important;
+    --yt-sys-color-baseline--keyboard-background-action: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--keyboard-background-bar: var(--ctp-surface1) !important;
+    --yt-sys-color-baseline--keyboard-background-emoji: var(--ctp-surface0) !important;
+    --yt-sys-color-baseline--keyboard-background-key: var(--ctp-surface1) !important;
+    --yt-sys-color-baseline--keyboard-background-key-alt: var(--ctp-surface2) !important;
+    --yt-sys-color-baseline--keyboard-background-switch: var(--ctp-accent) !important;
+    --yt-sys-color-baseline--keyboard-divider: var(--ctp-surface1) !important;
+    --yt-sys-color-baseline--keyboard-text-action: var(--ctp-surface0) !important;
+    --yt-sys-color-baseline--keyboard-text-character: var(--ctp-text) !important;
+    --yt-sys-color-baseline--keyboard-text-chevron: var(--ctp-text) !important;
+    --yt-sys-color-baseline--keyboard-text-icon: var(--ctp-text) !important;
+    --yt-sys-color-baseline--keyboard-text-symbol: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-button-secondary-darker: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-sys-color-baseline--overlay-filled-hover-light: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-filled-state-layer: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-filled-touch-light: var(--ctp-text) !important;
+    --yt-sys-color-baseline--overlay-green: var(--ctp-green) !important;
+    --yt-sys-color-baseline--overlay-tonal-hover-light: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-state-layer: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--overlay-tonal-touch-light: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-sys-color-baseline--static-medium-magenta: var(--ctp-lavender) !important;
+    --yt-sys-color-baseline--status-bar: var(--ctp-base) !important;
+    --yt-sys-color-baseline--surface-container: var(--ctp-mantle) !important;
+    --yt-sys-color-baseline--system-bar: var(--ctp-base) !important;
+    --yt-sys-color-baseline--tonal-hover-light: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --yt-sys-color-baseline--tonal-state-layer: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-sys-color-baseline--tonal-touch-light: color-mix(in srgb, var(--ctp-text) 25%, transparent) !important;
+    --t3a480c2f814ef19c: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --t77e217518bcd986b: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --tc5e0863356bf5767: var(--ctp-green) !important;
+    --t7a2234c5eadde886: var(--ctp-pink) !important;
+    --td340014d093b0821: var(--ctp-pink) !important;
+    --tf8c80baf678711b8: var(--ctp-pink) !important;
+    --t2986df03ecf88759: color-mix(in srgb, var(--ctp-red) 30%, var(--ctp-base)) !important;
+    --te0c856964146535b: var(--ctp-red) !important;
+    --tf630d2cff7da8057: var(--ctp-red) !important;
+    --tf69032263d26c015: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --ta5930fb3c4c7209c: var(--ctp-mauve) !important;
+    --t1f1729a8e756e8bf: var(--ctp-mauve) !important;
+    --t53c1a9d86136aded: color-mix(in srgb, var(--ctp-red) 30%, var(--ctp-base)) !important;
+    --t8533f30445e4a126: var(--ctp-red) !important;
+    --tc2512a21369bd447: var(--ctp-red) !important;
+    --t5088a11581fecd14: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --t331d13276596b01e: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --t42381e7a43d9caf4: var(--ctp-green) !important;
+    --t7f4f2c6d54836ce0: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --t7d8b8e5ee291aec0: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --t4726c68ef6d7b08f: color-mix(in srgb, var(--ctp-green) 21%, transparent) !important;
+    --tf0a0d1154827847f: color-mix(in srgb, var(--ctp-peach) 21%, transparent) !important;
+    --t3e41d7b17b187f69: var(--ctp-base) !important;
+    --tff65993384bb4560: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)) !important;
+    --te2867b13d771d055: var(--ctp-accent) !important;
+    --t933d7922f3158dc5: var(--ctp-accent) !important;
+    --t264e2c9cb87891f9: var(--ctp-accent) !important;
+    --t206f3fa2e01af22d: var(--ctp-accent) !important;
+    --t34f46f0f2c13d328: var(--ctp-accent) !important;
+    --t854c79338d8ca8a7: var(--ctp-red) !important;
+    --t20480717de80f555: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --t2d807bb79e75606d: var(--ctp-accent) !important;
+    --t617db776af0de196: var(--ctp-accent) !important;
+    --tb628117fc164ad87: var(--ctp-accent) !important;
+    --td545df04e2c659d7: var(--ctp-red) !important;
+    --t53991d599b1488f5: var(--ctp-red) !important;
+    --t93a9a9c8ff5bfbfc: var(--ctp-text) !important;
+    --tb315d8832c2ef6ef: var(--ctp-text) !important;
+    --te9b0b5b330fb2a7b: var(--ctp-text) !important;
+    --t5355e7dcd3a33a2f: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important;
+    --tc54fd20dab7048eb: color-mix(in srgb, var(--ctp-base) 60%, transparent) !important;
+    --t25a42c37f53e50e0: color-mix(in srgb, var(--ctp-base) 75%, transparent) !important;
+    --ta889dfda9605a358: color-mix(in srgb, var(--ctp-base) 80%, transparent) !important;
+    --t5978da8d584b8fe9: color-mix(in srgb, var(--ctp-base) 70%, transparent) !important;
+    --tdbe50d27d51f5093: color-mix(in srgb, var(--ctp-teal) 10.5%, transparent) !important;
+    --t99f774684cbb9703: color-mix(in srgb, var(--ctp-mauve) 10.5%, transparent) !important;
+    --tb8b31ac562fbe9b5: color-mix(in srgb, var(--ctp-mauve) 30%, transparent) !important;
+    --tef70ca245445b52b: color-mix(in srgb, var(--ctp-red) 30%, transparent) !important;
+    --t4f0922e5a3d0c20f: var(--ctp-green) !important;
+    --t7dfa6f84c9346edf: var(--ctp-text) !important;
+    --tecbdf924b63b27fc: var(--ctp-yellow) !important;
+    --t1405e70a39276293: var(--ctp-text) !important;
+    --tad8443faed66c111: var(--ctp-text) !important;
+    --te6d2b428de68554a: var(--ctp-surface0) !important;
+    --tc980c5478124c8c7: var(--ctp-accent) !important;
+    --t965644ecdbe4b7b8: var(--ctp-surface1) !important;
+    --tb14a10c3b43a15a3: var(--ctp-surface0) !important;
+    --tb13ff8797829e79e: var(--ctp-surface1) !important;
+    --te5668e6111aba0ed: var(--ctp-surface2) !important;
+    --ta7d628facfe84d18: var(--ctp-accent) !important;
+    --tbe42269534655e67: var(--ctp-surface1) !important;
+    --tab8059236063cadb: var(--ctp-text) !important;
+    --t735e435a8b7ad67c: var(--ctp-text) !important;
+    --t21af08fdbf6a1406: var(--ctp-text) !important;
+    --tc604113d09fee05d: var(--ctp-text) !important;
+    --t08a7c6c176cbc5c2: var(--ctp-surface0) !important;
+    --t8cdc9846a76caf1f: var(--ctp-text) !important;
+    --te1b64e6971040396: var(--ctp-surface0) !important;
+    --t416e5931fc464589: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --tb7d74bb3291c951d: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --tf3fc855af2285f5f: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --t0a1249f7c9e82b5e: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --t02c0a2c868c14ce8: var(--ctp-text) !important;
+    --td8562cdc203bc683: var(--ctp-surface1) !important;
+    --t53dda9125e8d1324: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --t544e31714f63d53c: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --tfaae96692cc182e4: var(--ctp-mauve) !important;
+    --t518e925f61bdcb91: var(--ctp-surface0) !important;
+    --tb927f5c0149004c6: var(--ctp-accent) !important;
+    --t832f22ce6618e99e: var(--ctp-text) !important;
+    --t45b2a38314924357: var(--ctp-base) !important;
+    --t6931aa1826b373b2: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --ted4236536899e4b3: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --ta057e2d872f2a0d4: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --t2c3e55cb638348df: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --t1aab759cd9ddbe39: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --tf5f050c65aebead5: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --t296c7f81dd09a9c3: var(--ctp-text) !important;
+    --tfa3475c508f5dfef: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)) !important;
+    --t9bc0b740242da017: var(--ctp-surface2) !important;
+    --t441a0e44e495381a: var(--ctp-accent) !important;
+    --tbdeaf5bc17152abc: var(--ctp-surface0) !important;
+    --tde41338fc2bd4ba5: var(--ctp-text) !important;
+    --t4d7776c28db21122: var(--ctp-green) !important;
+    --t7e34d5baa4ea6277: var(--ctp-overlay0) !important;
+    --tc4b26042d4cb141f: var(--ctp-overlay2) !important;
+    --t5208fd177a788cfa: var(--ctp-red) !important;
+    --tffc2fd3a644f6275: var(--ctp-text) !important;
+    --t6216186c28b3834b: var(--ctp-base) !important;
+    --t4a6da19e16bf221a: var(--ctp-subtext0) !important;
+    --td9c19f4f8cecd56e: var(--ctp-overlay0) !important;
+    --t3f3bdb4140d3ead7: var(--ctp-peach) !important;
+    --t904a88c623ca27ab: var(--ctp-green) !important;
+    --t2c3bbff6c15a3eb2: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --t0ccd1ace000d5e93: color-mix(in srgb, var(--ctp-crust) 80%, transparent) !important;
+    --tc87f6a7f05e65fc4: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --tc04ba3e73561953c: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --ta9b56aa666d71f06: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --t7c4965c11f8537c0: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --t432fbdbd7f2f3f71: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --t7f006a3165d45f92: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --tf3fc031aaa66f63b: color-mix(in srgb, var(--ctp-text) 25%, transparent) !important;
+    --taf1bdd961423c15f: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --t9d7bdcaefc975d44: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --t4fb0f67b251e1a42: var(--ctp-text) !important;
+    --ta08e036410c14538: var(--ctp-crust) !important;
+    --t7f9b7e1603e20b94: var(--ctp-text) !important;
+    --yt-light-wash-color: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --premium-yt-spec-static-brand-white: var(--ctp-text) !important;
+    --premium-yt-spec-overlay-text-primary: var(--ctp-text) !important;
+    --premium-yt-spec-light-green: var(--ctp-green) !important;
+    --yt-pdg-gift-item-selected-bg: var(--ctp-text) !important;
+    --yt-button-color: var(--ctp-crust) !important;
+    --yt-deprecated-blue-light: var(--ctp-accent) !important;
+    --yt-deprecated-opalescence-grey-opacity-lighten-3: color-mix(in srgb, var(--ctp-overlay2) 40%, transparent) !important;
+    --yt-deprecated-opalescence-soft-grey-opacity-lighten-3: color-mix(in srgb, var(--ctp-text) 40%, transparent) !important;
+    --yt-deprecated-luna-black-opacity-lighten-2: color-mix(in srgb, var(--ctp-base) 60%, transparent) !important;
+    --yt-deprecated-luna-black-opacity-lighten-3: color-mix(in srgb, var(--ctp-base) 40%, transparent) !important;
+    --yt-deprecated-luna-black-opacity-lighten-4: color-mix(in srgb, var(--ctp-base) 20%, transparent) !important;
+    --yt-opalescence-dark-grey: var(--ctp-surface1) !important;
+    --yt-deprecated-luna-black: var(--ctp-base) !important;
+    --yt-deprecated-white-opacity-lighten-4: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-deprecated-opalescence-soft-grey-opacity-lighten-1: color-mix(in srgb, var(--ctp-text) 80%, transparent) !important;
+    --yt-deprecated-opalescence-soft-grey: var(--ctp-text) !important;
+    --yt-live-chat-error-message-color: var(--ctp-red) !important;
+    --yt-live-chat-author-chip-owner-background-color: var(--ctp-yellow) !important;
+    --yt-live-chat-author-chip-owner-text-color: color-mix(in srgb, var(--ctp-crust) 87%, transparent) !important;
+    --yt-live-chat-poll-choice-hover-color: color-mix(in srgb, var(--ctp-base) 10%, transparent) !important;
+    --yt-live-interactivity-component-background-color: var(--ctp-accent) !important;
+    --yt-live-chat-additional-inline-action-button-background-color: color-mix(in srgb, var(--ctp-surface1) 80%, transparent) !important;
+    --yt-live-chat-additional-inline-action-button-background-color-hover: var(--ctp-surface1) !important;
+    --yt-live-chat-text-input-field-suggestion-text-color: var(--ctp-overlay0) !important;
+    --yt-live-chat-text-input-field-suggestion-text-color-hover: var(--ctp-surface1) !important;
+    --yt-live-chat-ticker-arrow-background: var(--ctp-text) !important;
+    --yt-live-chat-paid-message-buy-button-background-color: var(--ctp-text) !important;
+    --yt-live-chat-paid-sticker-buy-button-background-color: var(--ctp-text) !important;
+    --yt-live-chat-item-list-button-background-color: var(--ctp-accent) !important;
+    --yt-live-chat-item-list-button-color: var(--ctp-text) !important;
+    --yt-live-chat-legacy-paid-message-color: var(--ctp-text) !important;
+    --yt-live-chat-membership-item-sponsor-text-color: var(--ctp-text) !important;
+    --yt-live-chat-membership-item-footer-button-background-color: var(--ctp-text) !important;
+    --yt-live-chat-ticker-icon-background-color: var(--ctp-accent) !important;
+    --yt-live-chat-ticker-icon-color: var(--ctp-text) !important;
+    --yt-live-chat-viewer-engagement-message-endpoint-color: var(--ctp-accent) !important;
+    --yt-live-chat-viewer-leaderboard-icon-color: var(--ctp-lavender) !important;
+    --yt-live-chat-donation-chip-background-color: var(--ctp-text) !important;
+    --yt-live-chat-donation-chip-text-color: var(--ctp-surface0) !important;
+    --yt-live-chat-sponsor-header-color: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-live-chat-new-moderator-color: color-mix(in srgb, var(--ctp-text) 70%, transparent) !important;
+    --yt-live-chat-footer-button-text-color: var(--ctp-crust) !important;
+    --ytd-badge-icon-color: var(--ctp-text) !important;
+    --yt-endpoint-color: var(--ctp-text) !important;
+    --yt-endpoint-visited-color: var(--ctp-text) !important;
+    --yt-endpoint-hover-color: var(--ctp-accent) !important;
+    --paper-spinner-color: var(--ctp-text) !important;
+    --ytd-menu-renderer-button-color: var(--ctp-text) !important;
+    --yt-sys-color-baseline--icon-active-other: var(--ctp-text) !important;
+    --yt-formatted-string-deemphasize-color: var(--ctp-text) !important;
+    --paper-tooltip-background: var(--ctp-surface1) !important;
+    --paper-button-flat-keyboard-focus-background-color: var(--ctp-accent) !important;
+    --yt-deprecated-white-1: var(--ctp-text) !important;
+    --yt-deprecated-white-2: var(--ctp-text) !important;
+    --yt-deprecated-white-3: var(--ctp-text) !important;
+    --yt-deprecated-white-4: var(--ctp-text) !important;
+    --yt-deprecated-black-1: var(--ctp-surface0) !important;
+    --yt-deprecated-black-2: var(--ctp-surface0) !important;
+    --yt-deprecated-black-3: var(--ctp-surface0) !important;
+    --yt-deprecated-black-4: var(--ctp-base) !important;
+    --yt-deprecated-black-pure: var(--ctp-crust) !important;
+    --yt-deprecated-grey-1: var(--ctp-text) !important;
+    --yt-deprecated-grey-2: var(--ctp-subtext0) !important;
+    --yt-deprecated-grey-3: var(--ctp-overlay2) !important;
+    --yt-deprecated-grey-4: var(--ctp-overlay0) !important;
+    --yt-deprecated-grey-5: var(--ctp-overlay0) !important;
+    --yt-deprecated-brand-youtube-red: var(--ctp-accent) !important;
+    --yt-deprecated-brand-medium-red: var(--ctp-accent) !important;
+    --yt-deprecated-brand-light-red: var(--ctp-accent) !important;
+    --yt-deprecated-red-30: var(--ctp-red) !important;
+    --yt-deprecated-red-70: color-mix(in srgb, var(--ctp-red) 30%, var(--ctp-base)) !important;
+    --yt-deprecated-pale-blue: var(--ctp-text) !important;
+    --yt-deprecated-light-blue: var(--ctp-accent) !important;
+    --yt-deprecated-dark-blue: var(--ctp-accent) !important;
+    --yt-deprecated-navy-blue: var(--ctp-surface1) !important;
+    --yt-deprecated-light-green: var(--ctp-green) !important;
+    --yt-deprecated-dark-green: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-base)) !important;
+    --yt-deprecated-yellow: var(--ctp-yellow) !important;
+    --yt-deprecated-black-pure-alpha-5: color-mix(in srgb, var(--ctp-crust) 5%, transparent) !important;
+    --yt-deprecated-black-pure-alpha-10: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+    --yt-deprecated-black-pure-alpha-15: color-mix(in srgb, var(--ctp-crust) 15%, transparent) !important;
+    --yt-deprecated-black-pure-alpha-30: color-mix(in srgb, var(--ctp-crust) 30%, transparent) !important;
+    --yt-deprecated-black-pure-alpha-60: color-mix(in srgb, var(--ctp-crust) 60%, transparent) !important;
+    --yt-deprecated-black-pure-alpha-80: color-mix(in srgb, var(--ctp-crust) 80%, transparent) !important;
+    --yt-deprecated-black-1-alpha-98: color-mix(in srgb, var(--ctp-surface0) 98%, transparent) !important;
+    --yt-deprecated-black-1-alpha-95: color-mix(in srgb, var(--ctp-surface0) 95%, transparent) !important;
+    --yt-deprecated-white-1-alpha-10: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-deprecated-white-1-alpha-20: color-mix(in srgb, var(--ctp-text) 20%, transparent) !important;
+    --yt-deprecated-white-1-alpha-25: color-mix(in srgb, var(--ctp-text) 25%, transparent) !important;
+    --yt-deprecated-white-1-alpha-30: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important;
+    --yt-deprecated-white-1-alpha-70: color-mix(in srgb, var(--ctp-text) 70%, transparent) !important;
+    --yt-deprecated-white-1-alpha-95: color-mix(in srgb, var(--ctp-text) 95%, transparent) !important;
+    --yt-deprecated-white-1-alpha-98: color-mix(in srgb, var(--ctp-text) 98%, transparent) !important;
+    --yt-deprecated-brand-medium-red-alpha-90: color-mix(in srgb, var(--ctp-accent) 90%, transparent) !important;
+    --yt-deprecated-brand-medium-red-alpha-30: color-mix(in srgb, var(--ctp-accent) 30%, transparent) !important;
+    --yt-deprecated-brand-light-red-alpha-30: color-mix(in srgb, var(--ctp-accent) 30%, transparent) !important;
+    --yt-deprecated-light-blue-alpha-30: color-mix(in srgb, var(--ctp-accent) 30%, transparent) !important;
+    --yt-deprecated-dark-blue-alpha-30: color-mix(in srgb, var(--ctp-accent) 30%, transparent) !important;
+    --yt-deprecated-opalescence-grey: var(--ctp-overlay2) !important;
+    --yt-deprecated-blue: var(--ctp-accent) !important;
+    --yt-deprecated-luna-black-opacity-lighten-1: color-mix(in srgb, var(--ctp-base) 80%, transparent) !important;
+    --yt-deprecated-white-opacity-lighten-1: color-mix(in srgb, var(--ctp-text) 80%, transparent) !important;
+    --yt-deprecated-white-opacity-lighten-2: color-mix(in srgb, var(--ctp-text) 60%, transparent) !important;
+    --yt-deprecated-dark-surface-100: var(--ctp-base) !important;
+    --t124b7dafe9bc366d: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)) !important;
+    --ta564d8212bccb16a: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)) !important;
+    --t4e6df9b2b6b97e00: var(--ctp-mauve) !important;
+    --t5884672004d56120: var(--ctp-red) !important;
+    --t4d4f132f4712716a: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)) !important;
+    --taf7bd2f2e5a02772: var(--ctp-accent) !important;
+    --t374de7a0f7f6b6a4: var(--ctp-accent) !important;
+    --tf4689f158df519fa: var(--ctp-text) !important;
+    --t0aeda4b8dc32d2ba: var(--ctp-text) !important;
+    --t411713ca69f5bc16: var(--ctp-text) !important;
+    --t86c44655e6eba63b: var(--ctp-text) !important;
+    --t231ac42975008fa5: var(--ctp-green) !important;
+    --t87eabf113a15ac96: var(--ctp-text) !important;
+    --t858b809f8044e962: var(--ctp-base) !important;
+    --t0f59291ce5504543: var(--ctp-crust) !important;
+    --tfd295fd3f8d41cf1: var(--ctp-yellow) !important;
+    --tdc8af6750f0dad0d: var(--ctp-base) !important;
+    --t3410c91649e5eb8a: var(--ctp-surface1) !important;
+    --t4aeaa857de8a786b: var(--ctp-overlay0) !important;
+    --yt-attributed-string-link-hover-color: var(--ctp-text) !important;
+    --reel-metadata-color: var(--ctp-text) !important;
+    --ytd-video-primary-info-renderer-title-color: var(--ctp-yellow) !important;
+    --ytd-text-inline-expander-button-color: var(--ctp-text) !important;
+    --yt-message-renderer-subtext-color: var(--ctp-text) !important;
+    --yt-message-renderer-text-color: var(--ctp-text) !important;
+    --paper-slider-container-color: var(--ctp-surface2) !important;
+    --yt-lightsource-section2-color: var(--ctp-text) !important;
+    --yt-lightsource-section3-color: var(--ctp-text) !important;
+    --yt-lightsource-navBarColor: var(--ctp-text) !important;
+    --yt-lightsource-body-text-color: var(--ctp-text) !important;
+    --yt-lightsource-iron-activated-color: var(--ctp-text) !important;
+    --yt-lightsource-iron-inactive-color: var(--ctp-text) !important;
+    --yt-basic-foreground-body-color: var(--ctp-text) !important;
+    --yt-basic-foreground-activated-color: var(--ctp-text) !important;
+    --paper-dropdown-menu-color: var(--ctp-text) !important;
+    --paper-dropdown-menu-focus-color: var(--ctp-text) !important;
+    --paper-dropdown-menu-icon-color: var(--ctp-text) !important;
+    --paper-input-container-underline-focus-color: var(--ctp-text) !important;
+    --paper-input-container-underline-color: var(--ctp-text) !important;
+    --paper-input-container-input-color: var(--ctp-text) !important;
+    --paper-input-container-focus-color: var(--ctp-text) !important;
+    --yt-text-input-form-field-underline-color: var(--ctp-text) !important;
+    --paper-input-container-color: var(--ctp-text) !important;
+    --paper-slider-active-color: var(--ctp-accent) !important;
+    --paper-slider-knob-color: var(--ctp-accent) !important;
+    --paper-slider-knob-start-border-color: var(--ctp-accent) !important;
+    --paper-slider-knob-start-color: var(--ctp-accent) !important;
+    --primary-surface: var(--ctp-pink) !important;
+    --raised-surface: var(--ctp-pink) !important;
+    --secondary-surface: var(--ctp-pink) !important;
+    --primary-text: var(--ctp-accent) !important;
+    --secondary-text: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)) !important;
+    --w2w-start-background-color: var(--ctp-crust) !important;
+    --w2w-end-background-color: var(--ctp-crust) !important;
+    --yt-spec-base-background: var(--ctp-base) !important;
+    --yt-spec-raised-background: var(--ctp-surface0) !important;
+    --yt-spec-menu-background: var(--ctp-mantle) !important;
+    --yt-spec-inverted-background: var(--ctp-text) !important;
+    --yt-spec-additive-background: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --yt-spec-outline: var(--ctp-surface0) !important;
+    --yt-spec-text-primary: var(--ctp-text) !important;
+    --yt-spec-text-secondary: var(--ctp-subtext0) !important;
+    --yt-spec-text-disabled: var(--ctp-overlay1) !important;
+    --yt-spec-text-primary-inverse: var(--ctp-crust) !important;
+    --yt-spec-call-to-action: var(--ctp-accent) !important;
+    --yt-spec-call-to-action-inverse: var(--ctp-accent) !important;
+    --yt-spec-suggested-action: color-mix(in srgb, var(--ctp-accent) 22%, var(--ctp-base)) !important;
+    --yt-spec-suggested-action-inverse: var(--ctp-accent) !important;
+    --yt-spec-icon-active-other: var(--ctp-text) !important;
+    --yt-spec-icon-inactive: var(--ctp-subtext1) !important;
+    --yt-spec-icon-disabled: var(--ctp-overlay0) !important;
+    --yt-spec-brand-icon-active: var(--ctp-accent) !important;
+    --yt-spec-brand-icon-inactive: var(--ctp-overlay2) !important;
+    --yt-spec-brand-button-background: var(--ctp-accent) !important;
+    --yt-spec-brand-link-text: var(--ctp-accent) !important;
+    --yt-spec-wordmark-text: var(--ctp-text) !important;
+    --yt-spec-error-indicator: var(--ctp-red) !important;
+    --yt-spec-themed-blue: var(--ctp-accent) !important;
+    --yt-spec-themed-green: var(--ctp-green) !important;
+    --yt-spec-static-brand-red: var(--ctp-accent) !important;
+    --yt-spec-static-brand-white: var(--ctp-text) !important;
+    --yt-spec-static-brand-black: var(--ctp-crust) !important;
+    --yt-spec-button-chip-background-hover: var(--ctp-surface1) !important;
+    --yt-spec-touch-response: var(--ctp-text) !important;
+    --yt-spec-badge-chip-background: var(--ctp-surface0) !important;
+    --yt-spec-10-percent-layer: var(--ctp-surface1) !important;
+    --yt-spec-snackbar-background: var(--ctp-surface0) !important;
+    --yt-spec-general-background-a: var(--ctp-base) !important;
+    --yt-spec-general-background-b: var(--ctp-base) !important;
+    --yt-spec-general-background-c: var(--ctp-crust) !important;
+    --yt-spec-brand-background-solid: var(--ctp-base) !important;
+    --yt-spec-brand-background-primary: var(--ctp-base) !important;
+    --yt-spec-brand-background-secondary: var(--ctp-mantle) !important;
+    --yt-spec-mono-filled-hover: var(--ctp-subtext1) !important;
+    --yt-spec-mono-tonal-hover: var(--ctp-surface1) !important;
+    --yt-spec-filled-button-text: var(--ctp-crust) !important;
+    --yt-spec-selected-nav-text: var(--ctp-text) !important;
+    --yt-spec-red-indicator: var(--ctp-accent) !important;
+    --yt-brand-youtube-red: var(--ctp-accent) !important;
+    --yt-brand-medium-red: var(--ctp-accent) !important;
+    --yt-brand-light-red: var(--ctp-accent) !important;
+    --yt-spec-overlay-text-primary: var(--ctp-text) !important;
+    --yt-spec-overlay-background-solid: var(--ctp-crust) !important;
+    --yt-spec-overlay-background-heavy: color-mix(in srgb, var(--ctp-crust) 80%, transparent) !important;
+    --yt-spec-overlay-background-medium: color-mix(in srgb, var(--ctp-crust) 60%, transparent) !important;
+    --yt-spec-overlay-background-medium-light: color-mix(in srgb, var(--ctp-crust) 30%, transparent) !important;
+    --yt-spec-static-overlay-background-brand: var(--ctp-accent) !important;
+    --yt-frosted-glass-desktop: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important;
+    --yt-spec-frosted-glass-desktop: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important;
+    --iron-icon-fill-color: var(--ctp-text) !important;
+    --primary-text-color: var(--ctp-text) !important;
+    --secondary-text-color: var(--ctp-subtext0) !important;
+    --disabled-text-color: var(--ctp-overlay1) !important;
+    --divider-color: var(--ctp-surface1) !important;
+    --error-color: var(--ctp-red) !important;
+    --primary-color: var(--ctp-accent) !important;
+    --accent-color: var(--ctp-accent) !important;
+    --primary-background-color: var(--ctp-base) !important;
+    --secondary-background-color: var(--ctp-mantle) !important;
+    --light-primary-color: var(--ctp-accent) !important;
+    --dark-primary-color: var(--ctp-accent) !important;
+    --yt-live-chat-background-color: var(--ctp-base) !important;
+    --yt-live-chat-action-panel-background-color: var(--ctp-mantle) !important;
+    --yt-live-chat-header-background-color: var(--ctp-mantle) !important;
+    --yt-live-chat-primary-text-color: var(--ctp-text) !important;
+    --paper-tooltip-text-color: var(--ctp-text) !important;
+  }
+
+  /* ---- YouTube's hard-coded colours with Mocha values ----
+     Same selectors as YouTube's stylesheets, colour swapped by lightness (dark greys to
+     base/surfaces, light greys to subtext/text), brand red to the accent. Generated. */
+  #guide-skeleton { background-color: var(--ctp-text); }
+  #guide-skeleton .guide-ghost-icon { background-color: var(--ctp-text); }
+  #guide-skeleton .guide-ghost-text { background-color: var(--ctp-text); }
+  #home-container-skeleton { background-color: var(--ctp-text); }
+  #home-page-skeleton .skeleton-bg-color { background-color: var(--ctp-text); }
+  html[dark] #home-page-skeleton .skeleton-bg-color { background-color: var(--ctp-surface0); }
+  html[dark] #guide-skeleton { background-color: var(--ctp-base); }
+  html[dark] #home-container-skeleton { background-color: var(--ctp-base); }
+  body::-webkit-scrollbar-thumb { background-color: var(--ctp-subtext0); }
+  html[darker-dark-theme] #home-chips { background-color: var(--ctp-text); }
+  html[dark] #home-chips { background-color: var(--ctp-base); }
+  .ytSpecButtonShapeNextOverlay.ytSpecButtonShapeNextFilled { background: var(--ctp-text); }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextOverlay.ytSpecButtonShapeNextFilled:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: var(--ctp-text); }
+  }
+  .ytSpecButtonShapeNextOverlay.ytSpecButtonShapeNextFocused { border-color: var(--ctp-text); }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextOverlay.ytSpecButtonShapeNextFocused:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { border-color: var(--ctp-text); }
+  }
+  .ytSpecButtonShapeNextOverlayDark.ytSpecButtonShapeNextFilled { background: var(--ctp-text); }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextOverlayDark.ytSpecButtonShapeNextFilled:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: var(--ctp-text); }
+  }
+  .ytSpecButtonShapeNextOverlayDark.ytSpecButtonShapeNextTonal:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextOverlayDark.ytSpecButtonShapeNextTonal:active:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  }
+  .ytSpecButtonShapeNextOverlayDark.ytSpecButtonShapeNextFocused:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextOverlayDark.ytSpecButtonShapeNextFocused:active:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  }
+  .ytSpecButtonShapeNextBrandGradient.ytSpecButtonShapeNextFilled { background: linear-gradient(45deg,var(--ctp-accent) 30%,var(--ctp-lavender) 85%); }
+  .ytSpecButtonShapeNextBrandGradient.ytSpecButtonShapeNextFilled:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: linear-gradient(45deg,var(--ctp-accent) 30%,var(--ctp-lavender) 85%); }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextBrandGradient.ytSpecButtonShapeNextFilled:hover:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: linear-gradient(45deg,var(--ctp-accent) 30%,var(--ctp-lavender) 85%); }
+  }
+  @media (hover:none) {
+    .ytSpecButtonShapeNextBrandGradient.ytSpecButtonShapeNextFilled:active:not(.ytSpecButtonShapeNextEnableLightTouchResponse) { background: linear-gradient(45deg,var(--ctp-accent) 30%,var(--ctp-lavender) 85%); }
+  }
+  .contribYtLightShapeStaticWashLightOverlaySolid { background: var(--ctp-text); }
+  .ytLightTouchFeedbackShapeTouchLight { background: radial-gradient(circle,var(--ctp-text) 0,color-mix(in srgb, var(--ctp-text) 60%, transparent) 35%,color-mix(in srgb, var(--ctp-text) 15%, transparent) 70%,transparent 100%); }
+  .ytLightTouchFeedbackShapeHoverLight { background: radial-gradient(circle,var(--ctp-text) 0,color-mix(in srgb, var(--ctp-text) 50%, transparent) 50%,color-mix(in srgb, var(--ctp-text) 15%, transparent) 80%,transparent 100%); }
+  .ytwPlayerTimeDisplayLiveDot.ytwPlayerTimeDisplayLiveHead:before { background-color: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .ytChapteredProgressBarChapteredPlayerBarChapterSeen { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytChapteredProgressBarChapteredPlayerBarFill { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytFocusedChapterProgressBarLineProgressBarBackground { background-color: var(--ctp-text); }
+  .ytFocusedChapterProgressBarLineProgressBarPlayed { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytProgressBarLineProgressBarBackground { background-color: var(--ctp-text); }
+  .ytProgressBarLineProgressBarLoaded { background-color: var(--ctp-text); }
+  .ytProgressBarLineProgressBarHovered { background-color: var(--ctp-text); }
+  .ytProgressBarLineProgressBarPlayed { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytProgressBarPlayheadProgressBarPlayheadDot { background-color: var(--ctp-accent); }
+  .ytPlayerStoryboardStoryboardImageWrapper { background-color: var(--ctp-text); border: 2px solid var(--ctp-text); }
+  .ytdVolumeControlsSliderContainerVerticalExpanded { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytdVolumeControlsNativeSlider::-webkit-slider-thumb { background-color: var(--ctp-text); }
+  .ytdVolumeControlsNativeSlider::-moz-range-thumb { background-color: var(--ctp-text); }
+  .ytBadgeShapeTimely .ytBadgeShapeIcon { color: var(--ctp-accent); }
+  .ytBadgeShapeTimely.ytBadgeShapeModern .ytBadgeShapeIcon { color: var(--ctp-accent); }
+  .ytBadgeShapeLive { background: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .ytBadgeShapeLive.ytBadgeShapeOverlay { background: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .ytBadgeShapeLive.ytBadgeShapeModern { background: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .ytBadgeShapeStatusError { background: color-mix(in srgb, var(--ctp-red) 20%, transparent); }
+  .ytBadgeShapeStatusError.ytBadgeShapeModern { background: color-mix(in srgb, var(--ctp-red) 20%, transparent); }
+  .ytBadgeShapeThumbnailLive { background: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .ytBadgeShapeThumbnailLive.ytBadgeShapeModern { background: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .ytBadgeShapeThumbnailSpecial { background: var(--ctp-text); }
+  .ytBadgeShapeThumbnailSpecial .ytBadgeShapeIcon { color: var(--ctp-accent); }
+  .ytBadgeShapeThumbnailSpecial.ytBadgeShapeModern { background: var(--ctp-text); }
+  .ytBadgeShapeThumbnailSpecial.ytBadgeShapeModern .ytBadgeShapeIcon { color: var(--ctp-accent); }
+  .ytBrNzBadgeShapeBadgeStyleTypeNzRatingRedSquare { background: var(--ctp-red); }
+  .ytBrNzBadgeShapeBadgeStyleTypeNzRatingYellowCircle { background: var(--ctp-yellow); }
+  .ytBrNzBadgeShapeBadgeStyleTypeNzRatingGreenCircle { background: var(--ctp-green); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingSmallGreenSquare { background: var(--ctp-green); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingSmallBlueSquare { background: var(--ctp-accent); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingLargeBlueSquare { background: var(--ctp-accent); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingSmallYellowSquare { background: var(--ctp-yellow); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingLargeYellowSquare { background: var(--ctp-yellow); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingSmallOrangeSquare { background: var(--ctp-peach); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingLargeOrangeSquare { background: var(--ctp-peach); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingSmallRedSquare { background: var(--ctp-red); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingLargeRedSquare { background: var(--ctp-red); border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingSmallBlackSquare { border: 1px solid var(--ctp-text); }
+  .ytBrNzBadgeShapeBadgeStyleTypeBrRatingLargeBlackSquare { border: 1px solid var(--ctp-text); }
+  .ytwThumbnailOverlayResumePlaybackRendererThumbnailOverlayResumePlaybackProgress { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytPageIndicatorViewModelIndicatorSelected { background-color: var(--ctp-text); }
+  .ytAvatarStackViewModelTextContainerThinBorderOverlay { border: 1px solid var(--ctp-text); }
+  .ytChipShapeAICustomizedChipIconDarkMode { color: color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)); }
+  .ytSpinnerShapeSpinner { border: 2px solid var(--ctp-text); border-top-color: var(--ctp-overlay0); }
+  .ytSpinnerShapeSpinner:not([hidden]) { color: var(--ctp-surface1); }
+  .ytSpecTouchFeedbackShapeOverlayTouchResponse .ytSpecTouchFeedbackShapeFill { background-color: var(--ctp-text); }
+  .ytSpecTouchFeedbackShapeOverlayTouchResponse .ytSpecTouchFeedbackShapeStroke { border: 1px solid var(--ctp-text); }
+  .ytChipBarViewModelLeftArrowContainer:after { background: linear-gradient(to left,transparent 0,color-mix(in srgb, var(--ctp-base) 30%, transparent) 25%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 50%,color-mix(in srgb, var(--ctp-base) 90%, transparent) 75%,var(--ctp-base) 100%); }
+  .ytChipBarViewModelRightArrowContainer:before { background: linear-gradient(to right,transparent 0,color-mix(in srgb, var(--ctp-base) 30%, transparent) 25%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 50%,color-mix(in srgb, var(--ctp-base) 90%, transparent) 75%,var(--ctp-base) 100%); }
+  .ytAlertBannerViewModelWarning { background-color: color-mix(in srgb, var(--ctp-red) 20%, transparent); }
+  .ytChipsShelfViewModelGradientButton .ytChipsShelfViewModelLeftArrowContainer:after { background: linear-gradient(to left,transparent 0,color-mix(in srgb, var(--ctp-base) 30%, transparent) 25%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 50%,color-mix(in srgb, var(--ctp-base) 90%, transparent) 75%,var(--ctp-base) 100%); }
+  .ytChipsShelfViewModelGradientButton .ytChipsShelfViewModelRightArrowContainer:before { background: linear-gradient(to right,transparent 0,color-mix(in srgb, var(--ctp-base) 30%, transparent) 25%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 50%,color-mix(in srgb, var(--ctp-base) 90%, transparent) 75%,var(--ctp-base) 100%); }
+  .learningJourneyQuizViewModelQuizOptionSelectedIncorrect { background: var(--ctp-accent); }
+  .ytGenAiVideoOverviewViewModelInnerProgressBar { background-color: var(--ctp-accent); }
+  .ytwOverviewAnswerGhostCardSlider { background: linear-gradient(90deg,transparent 20%,color-mix(in srgb, var(--ctp-mauve) 40%, transparent) 50%,transparent 80%); }
+  .ytAiSearchInputViewModelBottomScrim { background: linear-gradient(180deg,transparent 0,color-mix(in srgb, var(--ctp-base) 30%, transparent) 22.67%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 54.44%,var(--ctp-base) 100%); }
+  .ytFloatingFooterMessageHost { background: linear-gradient(180deg,transparent 0,color-mix(in srgb, var(--ctp-base) 30%, transparent) 22.67%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 54.44%,var(--ctp-base) 100%); }
+  tp-yt-paper-button[disabled] { color: var(--ctp-subtext0); }
+  tp-yt-paper-button[disabled][raised] { background: var(--ctp-text); }
+  .tp-yt-paper-item.tp-yt-paper-icon-item { background: var(--ctp-text); }
+  .tp-yt-paper-item.tp-yt-paper-item { background: var(--ctp-text); }
+  #icon.yt-bumper-user-edu-content-view-model { color: var(--ctp-accent); }
+  yt-live-chat-paid-sticker-renderer.has-fixed-gradient:not([dashboard-money-feed]) #card.yt-live-chat-paid-sticker-renderer { background-color: var(--ctp-mauve); }
+  #hearted.yt-live-chat-creator-heart-view-model { color: var(--ctp-accent); }
+  #icon.yt-live-chat-viewer-engagement-message-renderer { color: var(--ctp-accent); }
+  #text-image-container.ytd-text-image-no-button-layout-renderer { background: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)); }
+  #picker.ytd-backstage-image-preview-renderer { border-color: var(--ctp-text); }
+  #overlay.ytd-backstage-image-preview-renderer { background: var(--ctp-subtext1); }
+  ytd-backstage-multi-image-select-renderer { border: 1px solid var(--ctp-text); }
+  #hearted.ytd-creator-heart-renderer { color: var(--ctp-accent); }
+  #primary-channel-url.ytd-handles-claiming-update-social-renderer { background: var(--ctp-accent); color: var(--ctp-accent); }
+  ytd-handles-claiming-update-social-renderer[is-dark-theme] #primary-channel-url.ytd-handles-claiming-update-social-renderer { background: var(--ctp-accent); }
+  ytd-handles-claiming-vanity-info-renderer[is-dark-theme] #vanity-container.ytd-handles-claiming-vanity-info-renderer { background: var(--ctp-accent); }
+  ytd-handles-claiming-vanity-info-renderer:not([is-dark-theme]) #vanity-container.ytd-handles-claiming-vanity-info-renderer { background: var(--ctp-accent); }
+  ytd-feed-nudge-renderer[is-dark-theme] #content-wrapper.ytd-feed-nudge-renderer { background-color: var(--ctp-text); }
+  ytd-feed-nudge-renderer[background-style=FEED_NUDGE_BACKGROUND_STYLE_LINEAR_GRADIENT] #content-wrapper.ytd-feed-nudge-renderer { background: linear-gradient(0deg,color-mix(in srgb, var(--ctp-text) 10%, transparent) 0,color-mix(in srgb, var(--ctp-accent) 10%, transparent) 23.44%,color-mix(in srgb, var(--ctp-mauve) 10%, transparent) 46.88%,color-mix(in srgb, var(--ctp-peach) 10%, transparent) 74.48%,color-mix(in srgb, var(--ctp-text) 10%, transparent)),var(--ctp-text); }
+  ytd-feed-nudge-renderer[background-style=FEED_NUDGE_BACKGROUND_STYLE_LINEAR_GRADIENT][is-dark-theme] #content-wrapper.ytd-feed-nudge-renderer { background: linear-gradient(0deg,color-mix(in srgb, var(--ctp-surface1) 40%, transparent) 0,color-mix(in srgb, var(--ctp-accent) 14%, transparent) 23.44%,color-mix(in srgb, var(--ctp-mauve) 14%, transparent) 46.88%,color-mix(in srgb, var(--ctp-peach) 14%, transparent) 74.48%,color-mix(in srgb, var(--ctp-surface1) 40%, transparent)),color-mix(in srgb, var(--ctp-text) 10%, transparent); }
+  #image.ytd-shopping-companion-item-renderer { background-color: var(--ctp-text); }
+  #product-image.ytd-vertical-product-card-renderer { background-color: var(--ctp-text); }
+  ytd-vertical-product-card-renderer[is-expandable-content] #product-image.ytd-vertical-product-card-renderer { background-color: var(--ctp-text); }
+  ytd-subscription-notification-toggle-button-renderer.style-destructive[is-paper-button] { background-color: var(--ctp-accent); }
+  ytd-subscription-notification-toggle-button-renderer.style-white-with-border[is-paper-button] { border: 1px solid var(--ctp-text); }
+  ytd-thumbnail-overlay-icon-renderer[icon-style=THUMBNAIL_OVERLAY_ICON_RENDERER_ICON_STYLE_FILLED] { background-color: var(--ctp-text); }
+  ytd-thumbnail-overlay-time-status-renderer[overlay-style=LIVE] #time-status.ytd-thumbnail-overlay-time-status-renderer { background-color: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  ytw-thumbnail-overlay-resume-playback-renderer.ytd-tvfilm-show-watch-forward-overlay-renderer { background-color: var(--ctp-text); }
+  .badge-style-type-live-now.ytd-badge-supported-renderer,.badge-style-type-starting-soon.ytd-badge-supported-renderer { border: 1px solid color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .badge-style-type-live-now-alternate.ytd-badge-supported-renderer { background: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .badge-style-type-nz-rating-red-square.ytd-badge-supported-renderer { background: var(--ctp-red); }
+  .badge-style-type-nz-rating-yellow-circle.ytd-badge-supported-renderer { background: var(--ctp-yellow); }
+  .badge-style-type-nz-rating-green-circle.ytd-badge-supported-renderer { background: var(--ctp-green); }
+  .badge-style-type-br-rating-small-green-square.ytd-badge-supported-renderer { background: var(--ctp-green); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-small-blue-square.ytd-badge-supported-renderer { background: var(--ctp-accent); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-large-blue-square.ytd-badge-supported-renderer { background: var(--ctp-accent); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-small-yellow-square.ytd-badge-supported-renderer { background: var(--ctp-yellow); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-large-yellow-square.ytd-badge-supported-renderer { background: var(--ctp-yellow); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-small-orange-square.ytd-badge-supported-renderer { background: var(--ctp-peach); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-large-orange-square.ytd-badge-supported-renderer { background: var(--ctp-peach); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-small-red-square.ytd-badge-supported-renderer { background: var(--ctp-red); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-large-red-square.ytd-badge-supported-renderer { background: var(--ctp-red); border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-small-black-square.ytd-badge-supported-renderer { border: 1px solid var(--ctp-text); }
+  .badge-style-type-br-rating-large-black-square.ytd-badge-supported-renderer { border: 1px solid var(--ctp-text); }
+  ytd-button-renderer.style-destructive[is-paper-button] { background-color: var(--ctp-accent); }
+  ytd-button-renderer.style-white-with-border[is-paper-button] { border: 1px solid var(--ctp-text); }
+  tp-yt-paper-button.ytd-subscribe-button-renderer { background-color: var(--ctp-accent); }
+  #image-renderer.yt-header-with-back-renderer { background-color: var(--ctp-accent); }
+  yt-button-renderer.style-destructive[is-paper-button] { background-color: var(--ctp-accent); }
+  yt-button-renderer.style-white-with-border[is-paper-button] { border: 1px solid var(--ctp-text); }
+  button.yt-emoji-picker-renderer[tone="0"] { border-color: var(--ctp-yellow); }
+  button.yt-emoji-picker-renderer[tone="1"] { border-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="2"] { border-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="3"] { border-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="4"] { border-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="5"] { border-color: color-mix(in srgb, var(--ctp-peach) 30%, var(--ctp-base)); }
+  button.yt-emoji-picker-renderer[tone="0"][selected] { background-color: var(--ctp-yellow); }
+  button.yt-emoji-picker-renderer[tone="1"][selected] { background-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="2"][selected] { background-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="3"][selected] { background-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="4"][selected] { background-color: var(--ctp-peach); }
+  button.yt-emoji-picker-renderer[tone="5"][selected] { background-color: color-mix(in srgb, var(--ctp-peach) 30%, var(--ctp-base)); }
+  #picker.yt-img-crop-picker { border-color: var(--ctp-text); }
+  yt-interaction[is-overlay] .fill.yt-interaction { background-color: var(--ctp-text); }
+  .ytwAdCardBadgeViewModelHost { background-color: var(--ctp-text); }
+  .ytwPivotButtonViewModelHostIcon { border: 1px solid var(--ctp-text); }
+  .ytChannelAttributionViewModelHost { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytSuggestionComponentRemoveLink { color: var(--ctp-accent); }
+  .ytSuggestionComponentRemovedText { color: var(--ctp-overlay0); }
+  .ytwGoalProgressTrendingBadgeIcon { color: var(--ctp-accent); }
+  .ytwGoalProgressTrendingIcon { color: var(--ctp-accent); }
+  .ytwGoalProgressProgressBarFill { background: linear-gradient(90deg,var(--ctp-accent) 60%,var(--ctp-lavender) 100%); }
+  .ytwGoalProgressBarProgressBarFill { background: linear-gradient(45deg,var(--ctp-red) 60%,var(--ctp-pink) 100%); }
+  .ytwGoalProgressBarDarkTheme .ytwGoalProgressBarProgressBarFill { background: linear-gradient(45deg,var(--ctp-accent) 60%,var(--ctp-lavender) 100%); }
+  .ytwVideoDisplayBillboardLayoutRendererImmersiveScrim { background: linear-gradient(to top,var(--ctp-base) 0,color-mix(in srgb, var(--ctp-base) 60%, transparent) 25%,color-mix(in srgb, var(--ctp-base) 30%, transparent) 55%,transparent 100%); }
+  html[dark] .ytwVideoDisplayBillboardLayoutRendererImmersiveScrim { background: linear-gradient(to top,var(--ctp-base) 0,color-mix(in srgb, var(--ctp-base) 90%, transparent) 25%,color-mix(in srgb, var(--ctp-base) 60%, transparent) 55%,color-mix(in srgb, var(--ctp-base) 30%, transparent) 80%,transparent 100%); }
+  .ytSpecIconBadgeShapeTypeNotification .ytSpecIconBadgeShapeBadge { background-color: var(--ctp-accent); }
+  .ytSearchboxComponentInputBox { border-color: var(--ctp-subtext1); }
+  .ytSearchboxComponentInputBoxHasFocus { border-color: var(--ctp-accent); }
+  .ytSearchboxComponentInputBoxDark { border-color: var(--ctp-surface1); background-color: var(--ctp-base); }
+  .ytSearchboxComponentInputBoxDark.ytSearchboxComponentInputBoxHasFocus { border-color: var(--ctp-accent); }
+  .ytSearchboxComponentSearchButton { border: 1px solid var(--ctp-text); background-color: var(--ctp-text); }
+  .ytSearchboxComponentSearchButtonDark { border: 1px solid var(--ctp-surface1); }
+  .ytSearchboxComponentSearchButton:hover { background-color: var(--ctp-text); border: 1px solid var(--ctp-subtext1); }
+  .ytSearchboxComponentSearchButtonDark:hover { border-color: var(--ctp-surface1); }
+  .ytSearchboxComponentSuggestionsContainer { border: 1px solid var(--ctp-text); }
+  .ytStoriesViewerViewModelProgress { background-color: var(--ctp-text); }
+  #contentContainer.tp-yt-app-drawer { background-color: var(--ctp-text); }
+  tp-yt-paper-card>.card-actions { border-top: 1px solid var(--ctp-text); }
+  .newness-dot.yt-reaction-control-panel-button-view-model { background-color: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  yt-reaction-control-panel-view-model[show-newness-dot] .newness-dot.yt-reaction-control-panel-view-model { background-color: color-mix(in srgb, var(--ctp-accent) 90%, transparent); }
+  .tp-yt-paper-item.ytd-menu-navigation-item-renderer { background: var(--ctp-text); }
+  .badge.ytd-image-tile-renderer { background-color: var(--ctp-text); }
+  ytd-toggle-option-renderer[selected][is-overlay] label.ytd-toggle-option-renderer { background-color: var(--ctp-text); }
+  .cls-2.ytd-clip-attribution-renderer { fill: var(--ctp-text); }
+  .cls-4.ytd-clip-attribution-renderer { fill: var(--ctp-accent); }
+  .cls-5.ytd-clip-attribution-renderer { fill: var(--ctp-red); }
+  ytd-clip-attribution-renderer[is-dark-theme] .cls-2.ytd-clip-attribution-renderer { fill: var(--ctp-surface2); }
+  ytd-clip-attribution-renderer[is-dark-theme] .cls-3.ytd-clip-attribution-renderer { fill: var(--ctp-surface0); }
+  ytd-clip-attribution-renderer[is-dark-theme] .cls-4.ytd-clip-attribution-renderer { fill: var(--ctp-accent); }
+  ytd-clip-attribution-renderer[is-dark-theme] .cls-5.ytd-clip-attribution-renderer { fill: var(--ctp-lavender); }
+  .guide-entry-badge.ytd-guide-entry-renderer { color: var(--ctp-accent); }
+  .tp-yt-paper-item.ytd-toggle-theme-compact-link-renderer { background: var(--ctp-text); }
+  ytd-call-to-action-button-renderer[button-color=RED] #overlay-button.ytd-call-to-action-button-renderer { background: var(--ctp-accent); }
+  #avatar.ytd-watch-card-rich-header-renderer { border: 1px solid var(--ctp-text); }
+  ytd-rich-metadata-renderer[component-style=RICH_METADATA_RENDERER_STYLE_SQUARE] #thumbnail.ytd-rich-metadata-renderer { background-color: var(--ctp-text); }
+  .preview.ytd-product-details-image-carousel-renderer { background-color: var(--ctp-text); }
+  #product-card-renderer-container.ytd-product-details-thumbnail-renderer { background-color: var(--ctp-text); }
+  #product-thumbnail.ytd-product-list-item-renderer { background-color: var(--ctp-text); }
+  #microphone-circle.ytd-voice-search-dialog-renderer { background-color: var(--ctp-accent); }
+  #pagination-thumbnails.ytd-carousel-item-renderer button.ytd-carousel-item-renderer .progress-bar.ytd-carousel-item-renderer { background-color: var(--ctp-text); }
+  ytd-watch-metadata[video-id=QrGrOK8oZG8] h1.ytd-watch-metadata { color: var(--ctp-yellow); }
+  .drag.yt-image-editor-renderer { background-color: var(--ctp-text); }
+  .handle-grip.yt-clip-creation-scrubber-view { background-color: var(--ctp-text); }
+  #playhead.yt-clip-creation-scrubber-view { background-color: var(--ctp-accent); }
+  yt-button-renderer.style-dark-on-white.yt-unlimited-page-header-renderer { background-color: var(--ctp-text); }
+  .WARNING.yt-alert-renderer { background-color: var(--ctp-yellow); }
+  .ERROR.yt-alert-renderer { background-color: var(--ctp-red); }
+  .INFO.yt-alert-renderer,.SUCCESS.yt-alert-renderer { background-color: var(--ctp-accent); }
+  yt-alert-with-actions-renderer[alert-style=ALERT_TYPE_WARNING] #content-wrapper.yt-alert-with-actions-renderer { background-color: color-mix(in srgb, var(--ctp-red) 20%, transparent); }
+  #progress.yt-page-navigation-progress { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytwFantasyPlayerViewModelRedZone .ytwFantasyPlayerViewModelInGameStatus { background: var(--ctp-accent); }
+  .ytThumbnailOverlayProgressBarHostProgressBarActiveSegment { background-color: var(--ctp-text); }
+  .ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment { background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytThumbnailOverlayProgressBarHostLabel { background-color: var(--ctp-text); }
+  .ytThumbnailOverlayProgressBarHostLabelTriangle { border-top: 5px solid var(--ctp-text); }
+  .ytMiniAppScoreChallengeViewModelScoreRadial:before { background: repeating-conic-gradient(from 0deg,var(--ctp-peach) 0deg 10deg,transparent 10deg 20deg); }
+  .ytMiniAppScoreChallengeViewModelDarkScoreRadial:before { background: repeating-conic-gradient(from 0deg,color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)) 0deg 10deg,transparent 10deg 20deg); }
+  .miniAppSplashScreenViewModelLoadingBarSegment { background-color: var(--ctp-text); }
+  .ytwProgressViewModelHostOverlay .ytwProgressViewModelHostProgressBarFill { background-color: var(--ctp-text); }
+  .ytSpecAvatarShapeStoriesUnwatched { border: 2px solid var(--ctp-accent); }
+  .ytSpecAvatarShapeLiveRing:after { background: linear-gradient(to top right,var(--ctp-accent) 60%,var(--ctp-lavender) 85%); }
+  .ytSpecAvatarShapeWhiteBorder { border: 2px solid var(--ctp-text); }
+  .ytSpecAvatarShapeIsOverlay.ytSpecAvatarShapeBackgroundBorder,.ytSpecAvatarShapeIsOverlay.ytSpecAvatarShapeBackgroundBorderThin { border-color: var(--ctp-text); }
+  .ytSpecAvatarShapeLiveBadge { background-color: var(--ctp-accent); }
+  .ytSpecAvatarShapeLiveDot { background-color: var(--ctp-accent); }
+  .ytwCompositeSourceVideoOverlayActive .ytwCompositeSourceVideoOverlayOutline { border-color: var(--ctp-overlay2); }
+  .ytwCompositeSourceVideoOverlayInteracting.ytwCompositeSourceVideoOverlayActive .ytwCompositeSourceVideoOverlayOutline { border-color: var(--ctp-text); }
+  .ytwCompositeSourceVideoOverlayHost:not(.ytwCompositeSourceVideoOverlayActive) .ytwCompositeSourceVideoOverlayOutline:hover { border-color: var(--ctp-overlay2); }
+  .ytSportsMatchRefinementViewModelClickable.ytSportsMatchRefinementViewModelOverlayHover:hover:after { background-color: var(--ctp-text); }
+  .ytwReelsAdCardButtonedViewModelHost,.ytwReelsAdCardButtonedViewModelHostIsClickableAdComponent { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytShortsSuggestedActionViewModelDynamicHostContainer { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytShortsSuggestedActionViewModelDynamicHostCollapsedTrailingSection { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytShortsSuggestedActionViewModelDynamicHostExpandedTrailingSection { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytOverlayProductStickerTitleButton.ytOverlayProductStickerTitleButton { background-color: var(--ctp-text); }
+  .ytOverlayProductStickerChevronButton.ytOverlayProductStickerChevronButton { background-color: var(--ctp-text); }
+  .ytOverlayProductStickerOpenIcon { background-color: var(--ctp-text); }
+  .html5-video-player:not(.ytp-touch-mode) ::-webkit-scrollbar { background-color: var(--ctp-surface1); }
+  .html5-video-player:not(.ytp-touch-mode) ::-webkit-scrollbar-track { background-color: var(--ctp-surface1); }
+  .html5-video-player:not(.ytp-touch-mode) ::-webkit-scrollbar-thumb { background-color: var(--ctp-overlay2); border: 1px solid var(--ctp-surface1); }
+  .ytp-delhi-modern-with-luminosity.ytp-delhi-modern .ytp-chrome-controls .ytp-next-button:not(.ytp-miniplayer-button-container>*) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-difference.ytp-delhi-modern .ytp-chrome-controls .ytp-next-button:not(.ytp-miniplayer-button-container>*) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-exclusion.ytp-delhi-modern .ytp-chrome-controls .ytp-next-button:not(.ytp-miniplayer-button-container>*) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-luminosity.ytp-delhi-modern .ytp-prev-button:not(.ytp-miniplayer-button-container>*) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-difference.ytp-delhi-modern .ytp-prev-button:not(.ytp-miniplayer-button-container>*) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-exclusion.ytp-delhi-modern .ytp-prev-button:not(.ytp-miniplayer-button-container>*) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-dni .ytp-chrome-controls .ytp-button[aria-pressed]:after { background-color: var(--ctp-text); }
+  .ytp-dni .ytp-swatch-background-color { background-color: var(--ctp-text); }
+  .ytp-flyout-cta:hover .ytp-flyout-cta-body { background-color: var(--ctp-text); }
+  .ytp-flyout-cta .ytp-flyout-cta-headline-container { color: var(--ctp-surface1); }
+  .ytp-flyout-cta .ytp-flyout-cta-headline-container-dark-background { color: var(--ctp-text); }
+  .ytp-flyout-cta .ytp-flyout-cta-description-container { color: var(--ctp-overlay1); }
+  .ytp-flyout-cta .ytp-flyout-cta-description-container-dark-background { color: var(--ctp-text); }
+  .ytp-flyout-cta .ytp-flyout-cta-action-button { background: var(--ctp-accent); border-color: var(--ctp-accent); }
+  .ytp-flyout-cta .ytp-flyout-cta-action-button-large { color: var(--ctp-base); }
+  .ytp-flyout-cta .ytp-flyout-cta-action-button:hover { background: var(--ctp-accent); }
+  .ytp-flyout-cta .ytp-flyout-cta-action-button:active { background: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)); }
+  .ytp-flyout-cta .ytp-flyout-cta-action-button.ytp-flyout-cta-action-button-rounded { background: var(--ctp-accent); }
+  .ytp-flyout-cta .ytp-flyout-cta-action-button.ytp-flyout-cta-action-button-rounded-large { background-color: var(--ctp-accent); }
+  .ytp-video-interstitial-buttoned-centered-layout { background: var(--ctp-text); }
+  .ytp-autonav-endscreen-upnext-thumbnail,.ytp-autonav-thumbnail-small { border: 1px solid var(--ctp-surface2); }
+  .ytp-autonav-author-and-view,.ytp-autonav-endscreen-upnext-author,.ytp-autonav-view-and-date { color: var(--ctp-subtext0); }
+  .ytp-autonav-suggestion-card[data-is-live=true] .ytp-autonav-live-stamp { background-color: var(--ctp-accent); }
+  .ytp-autonav-endscreen-upnext-container[data-is-live=true] .ytp-autonav-live-stamp { background-color: var(--ctp-accent); }
+  .ytp-delhi-modern.ytp-delhi-modern-icons .ytp-autonav-toggle-button[aria-checked=true]:after { background-color: var(--ctp-text); }
+  .ytp-cards-shopping-active.ytp-cards-teaser-shown .ytp-cards-button .ytp-svg-fill { fill: var(--ctp-accent); }
+  .ytp-cards-teaser .ytp-cards-teaser-box { background: var(--ctp-text); border-bottom: 1px solid var(--ctp-text); }
+  .ytp-cards-teaser-dismissible .ytp-cards-teaser-close-button path { fill: var(--ctp-overlay0); }
+  .ytp-title-channel.ytp-title-expanded { background-color: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-copytext::-moz-selection { background-color: var(--ctp-text); }
+  .yt-ui-ellipsis { background-color: var(--ctp-text); }
+  .yt-ui-ellipsis-nowrap-single-line { background-color: var(--ctp-text); }
+  .ytp-doubletap-ui-legacy { color: var(--ctp-text); }
+  .ytp-doubletap-ripple { background-color: color-mix(in srgb, var(--ctp-text) 15%, transparent); }
+  .ytp-doubletap-tooltip { color: var(--ctp-text); }
+  .ytp-doubletap-ui-legacy[data-side=forward] .ytp-doubletap-base-arrow { border-left: 11px solid var(--ctp-text); }
+  .ytp-doubletap-ui-legacy[data-side=back] .ytp-doubletap-base-arrow { border-right: 11px solid var(--ctp-text); }
+  .ytp-more-videos-view .ytp-next,.ytp-more-videos-view .ytp-previous { background: var(--ctp-surface1); }
+  .ytp-impression-link { background: color-mix(in srgb, var(--ctp-surface0) 80%, transparent); }
+  .ytp-expand-pause-overlay .ytp-pause-overlay { background: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-related-on-error-overlay .ytp-next,.ytp-related-on-error-overlay .ytp-previous { background: var(--ctp-surface1); }
+  .ytp-more-videos-button .ytp-more-videos-button-thumbnail { border: 2px solid var(--ctp-text); }
+  .ytp-error { background-color: var(--ctp-surface0); }
+  .ytp-error-buttons .ytp-error-button.ytp-error-button-proceed { background-color: var(--ctp-text); color: var(--ctp-base); }
+  .ytp-fine-scrubbing-cursor { background: var(--ctp-text); }
+  .ytp-info-panel-detail-close path { fill: var(--ctp-subtext0); }
+  .ytp-info-panel-preview { border-left: 4px solid var(--ctp-accent); }
+  .ytp-input-slider::-webkit-slider-runnable-track { background: -webkit-gradient(linear,left top,right top,from(var(--ctp-text)),color-stop(var(--ctp-text)),color-stop(var(--ctp-overlay0)),to(var(--ctp-overlay0))); }
+  .ytp-input-slider::-webkit-slider-thumb { background: var(--ctp-text); }
+  .ytp-input-slider::-moz-range-thumb { background: var(--ctp-text); }
+  .ytp-input-slider::-ms-thumb { background: var(--ctp-text); }
+  .ytp-varispeed-input-slider::-webkit-slider-runnable-track { background: -webkit-gradient(linear,left top,right top,from(var(--ctp-text)),color-stop(var(--ctp-text)),color-stop(var(--ctp-overlay2)),to(var(--ctp-overlay2))); }
+  @supports ((-webkit-writing-mode:vertical-rl) or (writing-mode:vertical-rl)) {
+    .ytp-vertical-slider .ytp-input-slider::-webkit-slider-runnable-track { background: -webkit-gradient(linear,left bottom,left top,from(var(--ctp-text)),color-stop(var(--ctp-text)),color-stop(var(--ctp-overlay0)),to(var(--ctp-overlay0))); }
+  }
+  .ytp-large-play-button-bg { fill: var(--ctp-surface0); }
+  .ytp-linked-account-popup { background: var(--ctp-text); color: color-mix(in srgb, var(--ctp-base) 80%, transparent); }
+  html[dark] .ytp-linked-account-popup { background: color-mix(in srgb, var(--ctp-surface0) 95%, transparent); }
+  .ytp-linked-account-popup-buttons { border-top: 1px solid var(--ctp-text); }
+  .ytp-linked-account-popup-button { color: var(--ctp-accent); }
+  html[dark] .ytp-linked-account-popup-button { color: var(--ctp-accent); }
+  .ytp-mdx-privacy-popup-confirm { background: var(--ctp-overlay0); }
+  .ytp-delhi-modern .ytp-offline-slate-bar { background-color: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytp-delhi-modern .ytp-offline-slate-button { background-color: var(--ctp-text); color: var(--ctp-surface0); }
+  .ytp-delhi-modern .ytp-offline-slate-button-icon svg { fill: var(--ctp-surface0); }
+  .ytp-reminder-menu { background: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-offline-slate-premiere-trailer .ytp-offline-slate-subtitle-text { color: var(--ctp-subtext0); }
+  .ytp-overflow-panel-close path { fill: var(--ctp-subtext0); }
+  .ytp-exp-ppp-update .ytp-paid-content-overlay-link { border-left: 4px solid var(--ctp-accent); }
+  .ytp-delhi-modern.ytp-exp-ppp-update .ytp-paid-content-overlay-indicator { background-color: var(--ctp-accent); }
+  .ytp-menuitem-keyboard-shortcut { color: var(--ctp-text); }
+  .ytp-menu-label-secondary,.ytp-menuitem-sublabel { color: var(--ctp-text); }
+  .ytp-menuitem-label-count { color: var(--ctp-text); }
+  .html5-video-player .ytp-panel-footer-content-link { color: var(--ctp-accent); }
+  .ytp-delhi-modern-with-luminosity.ytp-delhi-modern .ytp-chrome-controls .ytp-play-button { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-difference.ytp-delhi-modern .ytp-chrome-controls .ytp-play-button { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-exclusion.ytp-delhi-modern .ytp-chrome-controls .ytp-play-button { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-playlist-menu-header { border-bottom: 1px solid var(--ctp-surface1); }
+  .ytp-playlist-menu-subtitle { color: var(--ctp-subtext1); }
+  .ytp-playlist-menu-close path { fill: var(--ctp-subtext0); }
+  .ytp-scrubber-pull-indicator:after,.ytp-scrubber-pull-indicator:before { border-color: var(--ctp-text); }
+  .ytp-delhi-modern .ytp-progress-list { background: color-mix(in srgb, var(--ctp-surface0) 60%, transparent); }
+  .ytp-delhi-modern-with-luminosity.ytp-delhi-modern .ytp-progress-list { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-difference.ytp-delhi-modern .ytp-progress-list { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-exclusion.ytp-delhi-modern .ytp-progress-list { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-bound-time-left,.ytp-bound-time-right { background-color: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); color: var(--ctp-text); }
+  .ytp-bound-time-left:after { border-color: color-mix(in srgb, var(--ctp-surface0) 90%, transparent) transparent transparent transparent; }
+  .ytp-bound-time-right:after { border-color: transparent color-mix(in srgb, var(--ctp-surface0) 90%, transparent) transparent transparent; }
+  .ytp-timed-marker { background-color: var(--ctp-text); }
+  .ytp-progress-linear-live-buffer { background: var(--ctp-accent); }
+  .ytp-load-progress.ytp-fast-load { background: color-mix(in srgb, var(--ctp-teal) 30%, var(--ctp-base)); }
+  .ytp-play-progress { background: -webkit-gradient(linear,left top,right top,color-stop(80%,var(--ctp-accent)),to(var(--ctp-lavender))); background: -webkit-linear-gradient(left,var(--ctp-accent) 80%,var(--ctp-lavender)); background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytp-unified-seek-active .ytp-unified-seek-wrapper { background: -webkit-gradient(linear,left top,right top,color-stop(80%,var(--ctp-accent)),to(var(--ctp-lavender))); background: -webkit-linear-gradient(left,var(--ctp-accent) 80%,var(--ctp-lavender)); background: linear-gradient(90deg,var(--ctp-accent) 80%,var(--ctp-lavender)); }
+  .ytp-settings-button.ytp-3d-badge-grey:after { background-color: var(--ctp-overlay0); }
+  .ytp-settings-button.ytp-hbr-quality-badge:after,.ytp-settings-button.ytp-hdr-quality-badge:after { border-color: var(--ctp-accent); }
+  .ytp-popup { background: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-share-panel-close path { fill: var(--ctp-subtext0); }
+  .ytp-share-panel-include-playlist { color: var(--ctp-subtext0); }
+  .ytp-slider-handle { background: var(--ctp-text); }
+  .ytp-slider-handle:before { background: var(--ctp-text); }
+  .ytp-spinner-circle { border-color: var(--ctp-text) var(--ctp-text) transparent; }
+  .ytp-sfn { background: color-mix(in srgb, var(--ctp-surface0) 80%, transparent); }
+  .ytp-storyboard-framepreview-timestamp { color: var(--ctp-text); }
+  .ytp-sb-subscribe,a.ytp-sb-subscribe { background-color: var(--ctp-text); }
+  .ytp-shorts-mode .ytp-sb-subscribe,.ytp-shorts-mode a.ytp-sb-subscribe { background-color: var(--ctp-text); }
+  .ytp-shorts-mode .ytp-sb-unsubscribe { color: var(--ctp-text); }
+  .ytp-sb-subscribe.ytp-sb-disabled,.ytp-sb-unsubscribe.ytp-sb-disabled { background-color: var(--ctp-red); }
+  .ytp-sb.ytp-sb-classic { background-color: var(--ctp-text); }
+  .ytp-sb-classic .ytp-sb-subscribe { border: 1px solid var(--ctp-accent); }
+  .ytp-sb-classic .ytp-sb-unsubscribe { border: 1px solid var(--ctp-text); }
+  .ytp-sb-classic .ytp-sb-count { border: 1px solid var(--ctp-text); }
+  .ytp-sb-classic .ytp-sb-subscribe .ytp-sb-count,.ytp-sb-classic .ytp-sb-unsubscribe { background-color: var(--ctp-text); }
+  .ytp-sb-classic .ytp-sb-subscribe .ytp-sb-text { background-color: var(--ctp-accent); }
+  .ytp-sb-classic .ytp-sb-count,.ytp-sb-classic .ytp-sb-unsubscribe .ytp-sb-text { background-color: var(--ctp-text); color: var(--ctp-overlay1); }
+  .caption-edit { background: color-mix(in srgb, var(--ctp-base) 75%, transparent); }
+  .ytp-suggested-action-badge:hover { background-color: color-mix(in srgb, var(--ctp-surface0) 95%, transparent); }
+  .ytp-suggested-action-badge-img { background: var(--ctp-text); }
+  .ytp-suggested-action-more-products-icon { background-color: var(--ctp-text); }
+  .ytp-featured-product-thumbnail { background: var(--ctp-text); }
+  .ytp-featured-product-exclusive-badge { background: -webkit-gradient(linear,left top,right top,from(color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base))),color-stop(var(--ctp-mauve)),to(var(--ctp-pink))); background: -webkit-linear-gradient(left,color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)),var(--ctp-mauve),var(--ctp-pink)); background: linear-gradient(90deg,color-mix(in srgb, var(--ctp-mauve) 30%, var(--ctp-base)),var(--ctp-mauve),var(--ctp-pink)); }
+  .ytp-delhi-modern-with-luminosity.ytp-delhi-modern .ytp-time-wrapper:not(.ytp-miniplayer-ui *) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-difference.ytp-delhi-modern .ytp-time-wrapper:not(.ytp-miniplayer-ui *) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-exclusion.ytp-delhi-modern .ytp-time-wrapper:not(.ytp-miniplayer-ui *) { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-time-current,.ytp-time-duration,.ytp-time-separator { color: var(--ctp-text); }
+  .ytp-live-badge:before { background: var(--ctp-overlay1); }
+  .ytp-delhi-modern-with-luminosity.ytp-delhi-modern .ytp-clip .ytp-clip-watch-full-video-button { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-difference.ytp-delhi-modern .ytp-clip .ytp-clip-watch-full-video-button { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-delhi-modern-with-exclusion.ytp-delhi-modern .ytp-clip .ytp-clip-watch-full-video-button { background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent); }
+  .ytp-time-clip-icon svg { fill: var(--ctp-text); }
+  .ytp-menuitem[aria-disabled=true] { color: var(--ctp-overlay2); }
+  .ytp-menuitem[aria-disabled=true] path { fill: var(--ctp-overlay2); }
+  .ytp-menuitem-toggle-checkbox:after { background-color: var(--ctp-subtext1); }
+  .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox:after { background-color: var(--ctp-text); }
+  .ytp-tooltip.ytp-preview { background-color: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-tooltip-bottom-text { background-color: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-tooltip-opaque .ytp-tooltip-bottom-text { background-color: var(--ctp-surface0); }
+  .ytp-tooltip.ytp-preview:not(.ytp-text-detail) { background-color: var(--ctp-text); }
+  .ytp-tooltip.ytp-text-detail.ytp-preview.ytp-has-duration .ytp-tooltip-duration { background-color: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-tooltip.ytp-text-detail .ytp-tooltip-title { color: var(--ctp-subtext0); }
+  .ytp-unmute-inner { background-color: var(--ctp-text); border-bottom: 1px solid var(--ctp-text); }
+  .ytp-unmute-animated .ytp-unmute-icon { background-color: var(--ctp-text); border-bottom: 1px solid var(--ctp-text); }
+  .ytp-unmute-animated .ytp-unmute-box { background-color: var(--ctp-text); border-bottom: 1px solid var(--ctp-text); }
+  .ytp-user-info-panel { background: color-mix(in srgb, var(--ctp-surface0) 80%, transparent); }
+  .ytp-user-info-panel-login { color: var(--ctp-accent); }
+  .ytp-video-menu-item-author { color: var(--ctp-subtext1); }
+  .ytp-volume-slider-handle { background: var(--ctp-text); }
+  .ytp-volume-slider-handle:before { background: var(--ctp-text); }
+  .ytp-continue-watching-button.ytp-watch-on-youtube-button { background-color: var(--ctp-text); color: var(--ctp-base); }
+  .ytp-continue-watching-button.ytp-watch-on-youtube-button:hover { background-color: var(--ctp-text); color: var(--ctp-base); }
+  .ytp-watch-on-youtube-button:focus { border: 2px solid var(--ctp-text); }
+  .ytp-continue-watching-button.ytp-watch-on-youtube-button:focus { border: 2px solid var(--ctp-text); background-color: var(--ctp-base); }
+  .ytp-watch-again-on-youtube-endscreen-more-videos-container .ytp-more-videos-view { background: color-mix(in srgb, var(--ctp-surface0) 90%, transparent); }
+  .ytp-drawer-open-button:after { border-right-color: var(--ctp-subtext0); }
+  .watch-skeleton .skeleton-bg-color { background-color: var(--ctp-text); }
+  .watch-skeleton .skeleton-light-border-bottom { border-bottom: 1px solid var(--ctp-text); }
+  html[dark] .watch-skeleton .skeleton-bg-color { background-color: var(--ctp-surface0); }
+  #grid-container-skeleton { background-color: var(--ctp-text); }
+  #grid-container-skeleton .skeleton-bg-color { background-color: var(--ctp-text); }
+  html[dark] #grid-container-skeleton .skeleton-bg-color { background-color: var(--ctp-surface0); }
+  html[dark] #grid-container-skeleton { background-color: var(--ctp-base); }
+  body::-webkit-scrollbar-thumb { background-color: var(--ctp-subtext0); }
+
+  /* ---- Hand-written fixes ---- */
+
+  html, body {
+    background-color: var(--ctp-base) !important;
+  }
+
+  /* Page glow: fixed Mocha washes behind everything (blue, mauve, sapphire, lavender into base).
+     The page containers above it go transparent so it shows through; cards, menus and the player
+     keep their own surfaces. */
+  ytd-app {
+    background:
+      radial-gradient(50% 45% at 22% 18%, color-mix(in srgb, var(--ctp-accent) 14%, transparent), transparent 72%),
+      radial-gradient(45% 45% at 85% 30%, color-mix(in srgb, var(--ctp-mauve) 11%, transparent), transparent 72%),
+      radial-gradient(45% 40% at 70% 92%, color-mix(in srgb, var(--ctp-sapphire) 9%, transparent), transparent 72%),
+      radial-gradient(35% 35% at 8% 80%, color-mix(in srgb, var(--ctp-lavender) 8%, transparent), transparent 72%),
+      var(--ctp-base) !important;
+    background-attachment: fixed !important;
+  }
+  ytd-page-manager, #page-manager, ytd-browse, ytd-search, ytd-watch-flexy, #columns.ytd-watch-flexy,
+  ytd-two-column-browse-results-renderer, ytd-two-column-search-results-renderer, ytd-rich-grid-renderer,
+  ytd-section-list-renderer, ytd-item-section-renderer, ytd-rich-section-renderer, ytd-shelf-renderer,
+  ytd-playlist-video-list-renderer, ytd-tabbed-page-header, #contents.ytd-rich-grid-renderer {
+    background: transparent !important;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--ctp-accent) 35%, transparent);
+    color: var(--ctp-text);
+  }
+
+  * {
+    scrollbar-color: var(--ctp-surface2) transparent;
+  }
+
+  /* Top bar and left guide */
+  /* Frosted: one translucent, blurred layer. #frosted-glass already spans the top bar and, when it is
+     shown, the chip row (56px / 112px), so both read as one bar; the masthead's own background and the
+     chip row stay transparent on top of it instead of stacking a second blur. */
+  ytd-masthead {
+    background: transparent !important;
+  }
+  #frosted-glass, #frosted-glass.ytd-app, #frosted-glass.with-chipbar, #frosted-glass.without-chipbar,
+  #frosted-glass.loading-with-chipbar, #frosted-glass.loading-without-chipbar, #frosted-glass.none {
+    background: color-mix(in srgb, var(--ctp-base) 78%, transparent) !important;
+    backdrop-filter: blur(24px) !important;
+  }
+  tp-yt-app-drawer #contentContainer, #guide-content, ytd-mini-guide-renderer, #guide-wrapper {
+    background: color-mix(in srgb, var(--ctp-mantle) 72%, transparent) !important;
+    backdrop-filter: blur(24px) !important;
+  }
+  ytd-guide-entry-renderer[active] tp-yt-paper-item, ytd-guide-entry-renderer[active] {
+    background-color: var(--ctp-surface0) !important;
+  }
+
+  /* Page load bar */
+  #progress.yt-page-navigation-progress, yt-page-navigation-progress #progress {
+    background: var(--ctp-accent) !important;
+  }
+
+  /* Logo: YouTube red becomes the accent, the play triangle stays dark */
+  [fill="red"], [fill="#F00"], [fill="#f00"], [fill="#FF0000"], [fill="#ff0000"],
+  [fill="#f03"], [fill="#F03"], [fill="#FF0033"], [fill="#ff0033"], [fill="#FF0033FF"] {
+    fill: var(--ctp-accent) !important;
+  }
+  ytd-topbar-logo-renderer [fill="white"], ytd-logo [fill="white"], #logo-icon [fill="white"] {
+    fill: var(--ctp-crust) !important;
+  }
+  ytd-topbar-logo-renderer [fill="#282828"], ytd-topbar-logo-renderer [fill="#212121"],
+  ytd-topbar-logo-renderer [fill="#FFFFFF"], ytd-topbar-logo-renderer [fill="#fff"] {
+    fill: var(--ctp-text) !important;
+  }
+
+  /* Ambient mode glow (it tints the page with the video's colours). The newer watch page paints it
+     with the ytCinematicContainerViewModel pieces: a blurred copy of the video behind the player. */
+  #cinematics, #cinematic-container, #cinematics-container, #cinematics-full-bleed-container,
+  .ytCinematicContainerViewModelBackgroundImage, .ytCinematicContainerViewModelFadeToThemeImage,
+  [class*="ytCinematicContainerViewModel"] img, [class*="ytCinematicContainerViewModel"] canvas {
+    display: none !important;
+  }
+  [class*="ytCinematicContainerViewModel"] {
+    background: transparent !important;
+  }
+
+  /* On the watch page YouTube fades the top bar to transparent (opacity 0) so the ambient glow shows
+     through. With the glow gone it has to be solid again, or the page scrolls visibly under it. */
+  #background.ytd-masthead,
+  ytd-masthead[is-watch-page] #background.ytd-masthead,
+  ytd-masthead[is-shorts-page] #background.ytd-masthead {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Player: progress, scrubber, popups, tooltips */
+  .ytp-play-progress, .ytp-swatch-background-color, .ytp-scrubber-button,
+  .ytp-chapter-hover-container .ytp-play-progress, .ytProgressBarLineProgressBarPlayed,
+  .ytProgressBarPlayheadProgressBarPlayheadDot, .ytChapteredProgressBarChapteredPlayerBarChapterSeen,
+  .ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment,
+  #progress.ytd-thumbnail-overlay-resume-playback-renderer {
+    background: var(--ctp-accent) !important;
+  }
+  .ytp-scrubber-button { border-color: var(--ctp-accent) !important; }
+  .ytp-load-progress { background: color-mix(in srgb, var(--ctp-text) 30%, transparent) !important; }
+  .ytp-progress-list, .ytThumbnailOverlayProgressBarHostWatchedProgressBar,
+  ytd-thumbnail-overlay-resume-playback-renderer {
+    background: color-mix(in srgb, var(--ctp-surface2) 60%, transparent) !important;
+  }
+  .ytp-popup, .ytp-settings-menu, .ytp-panel, .ytp-contextmenu {
+    background: color-mix(in srgb, var(--ctp-mantle) 94%, transparent) !important;
+    text-shadow: none !important;
+  }
+  .ytp-menuitem:not([aria-disabled="true"]):hover, .ytp-menuitem[aria-checked="true"]:focus {
+    background-color: color-mix(in srgb, var(--ctp-surface1) 80%, transparent) !important;
+  }
+  .ytp-menuitem[aria-checked="true"] .ytp-menuitem-toggle-checkbox {
+    background: var(--ctp-accent) !important;
+  }
+  .ytp-tooltip-text, .ytp-tooltip-bottom-text .ytp-tooltip-text, .ytp-tooltip.ytp-bottom .ytp-tooltip-text {
+    background: color-mix(in srgb, var(--ctp-mantle) 94%, transparent) !important;
+    color: var(--ctp-text) !important;
+  }
+  .ytp-panel-menu, .ytp-menuitem-label, .ytp-menuitem-content, .ytp-panel-header, .ytp-panel-title {
+    color: var(--ctp-text) !important;
+  }
+  .ytp-settings-button.ytp-hd-quality-badge::after, .ytp-settings-button.ytp-4k-quality-badge::after,
+  .ytp-settings-button.ytp-hdr-quality-badge::after, .ytp-settings-button.ytp-5k-quality-badge::after,
+  .ytp-settings-button.ytp-8k-quality-badge::after,
+  .ytp-chrome-controls .ytp-button[aria-pressed="true"]::after {
+    background-color: var(--ctp-accent) !important;
+  }
+  .ytp-live-badge[disabled]::before, .ytp-live-badge::before { background: var(--ctp-accent) !important; }
+  .ytp-autonav-toggle-button[aria-checked="true"] { background-color: var(--ctp-accent) !important; }
+  .html5-video-player .ytp-sfn { background: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important; color: var(--ctp-text) !important; }
+  .ytp-sb-subscribe { background-color: var(--ctp-accent) !important; color: var(--ctp-crust) !important; }
+  .ytp-sb-unsubscribe { background-color: var(--ctp-surface1) !important; color: var(--ctp-text) !important; }
+  .ytp-ce-element .ytp-ce-expanding-overlay-background, .ytp-ce-element .ytp-ce-element-shadow {
+    background-color: var(--ctp-mantle) !important;
+  }
+
+  /* Buttons */
+  .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--filled,
+  .ytSpecButtonShapeNextMono.ytSpecButtonShapeNextFilled {
+    background-color: var(--ctp-text) !important;
+    color: var(--ctp-crust) !important;
+  }
+  .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal,
+  .ytSpecButtonShapeNextMono.ytSpecButtonShapeNextTonal {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal:hover,
+  .ytSpecButtonShapeNextMono.ytSpecButtonShapeNextTonal:hover {
+    background-color: var(--ctp-surface1) !important;
+  }
+  .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--filled,
+  .ytSpecButtonShapeNextCallToAction.ytSpecButtonShapeNextFilled {
+    background-color: var(--ctp-accent) !important;
+    color: var(--ctp-crust) !important;
+  }
+  .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text,
+  .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline,
+  .ytSpecButtonShapeNextCallToAction.ytSpecButtonShapeNextText,
+  .ytSpecButtonShapeNextCallToAction.ytSpecButtonShapeNextOutline {
+    color: var(--ctp-accent) !important;
+  }
+
+  /* Chips (All / Music / Gaming ...) */
+  yt-chip-cloud-chip-renderer, .ytChipShapeChip, chip-shape, chip-shape button {
+    border-radius: 8px !important;
+  }
+  yt-chip-cloud-chip-renderer, .ytChipShapeInactive, .ytChipShapeChip:not(.ytChipShapeActive) {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  yt-chip-cloud-chip-renderer[selected], .ytChipShapeActive {
+    background-color: var(--ctp-accent) !important;
+    color: var(--ctp-crust) !important;
+  }
+  #chips-wrapper.ytd-feed-filter-chip-bar-renderer, ytd-feed-filter-chip-bar-renderer #chips-wrapper,
+  ytd-feed-filter-chip-bar-renderer, .ytChipBarViewModelHost {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+  ytd-feed-filter-chip-bar-renderer #left-arrow::after, ytd-feed-filter-chip-bar-renderer #right-arrow::before,
+  .ytChipBarViewModelLeftArrowContainer::after, .ytChipBarViewModelRightArrowContainer::before {
+    background: none !important;
+  }
+
+  /* Search box and suggestions */
+  .ytSearchboxComponentInputBox, .ytSearchboxComponentInputBoxDark, #container.ytd-searchbox {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+    box-shadow: none !important;
+  }
+  .ytSearchboxComponentInputBoxHasFocus, .ytSearchboxComponentInputBoxHasFocusDark {
+    border-color: var(--ctp-accent) !important;
+  }
+  .ytSearchboxComponentInput, input.ytSearchboxComponentInput, #search-input input {
+    color: var(--ctp-text) !important;
+  }
+  .ytSearchboxComponentSearchButton, .ytSearchboxComponentSearchButtonDark, #search-icon-legacy {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .ytSearchboxComponentSuggestionsContainer, .ytSearchboxComponentSuggestionsContainerDark,
+  .sbdd_b, .gstl_50.sbdd_a {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface0) !important;
+  }
+  .ytSuggestionComponentHighlighted, .sbhl { background: var(--ctp-surface0) !important; }
+  .ytSuggestionComponentSuggestion, .ytSuggestionComponentSuggestionDark, .sbqs_c { color: var(--ctp-text) !important; }
+
+  /* Menus, dialogs, sheets */
+  ytd-menu-popup-renderer, tp-yt-paper-listbox, ytd-multi-page-menu-renderer,
+  .ytContextualSheetLayoutHost, .ytSpecDialogLayoutHost, tp-yt-paper-dialog,
+  ytd-popup-container tp-yt-iron-dropdown #contentWrapper > * {
+    background-color: var(--ctp-mantle) !important;
+  }
+  .ytListItemViewModelTappable:hover, tp-yt-paper-item:hover, ytd-menu-service-item-renderer:hover {
+    background-color: var(--ctp-surface0) !important;
+  }
+
+  /* Description box, comments, chapters */
+  ytd-watch-metadata {
+    --yt-saturated-base-background: var(--ctp-base) !important;
+    --yt-saturated-raised-background: var(--ctp-surface0) !important;
+    --yt-saturated-additive-background: var(--ctp-surface0) !important;
+    --yt-saturated-text-primary: var(--ctp-text) !important;
+    --yt-saturated-text-secondary: var(--ctp-subtext0) !important;
+    --yt-saturated-overlay-background: var(--ctp-surface0) !important;
+    --yt-saturated-key-light: var(--ctp-surface1) !important;
+  }
+  #description.ytd-watch-metadata {
+    background: var(--ctp-surface0) !important;
+  }
+  ytd-macro-markers-list-item-renderer {
+    --ytd-macro-markers-list-item-background-color: var(--ctp-surface0) !important;
+    --ytd-macro-markers-list-item-title-color: var(--ctp-text) !important;
+    --ytd-macro-markers-list-item-secondary-color: var(--ctp-subtext1) !important;
+    --ytd-macro-markers-list-item-timestamp-background-color: var(--ctp-surface1) !important;
+  }
+  ytd-playlist-panel-video-renderer, ytd-expandable-metadata-renderer, ytd-playlist-panel-renderer {
+    --yt-lightsource-section1-color: var(--ctp-base) !important;
+    --yt-lightsource-section2-color: var(--ctp-surface0) !important;
+    --yt-lightsource-section3-color: var(--ctp-surface1) !important;
+    --yt-lightsource-section4-color: var(--ctp-surface2) !important;
+    --yt-lightsource-primary-title-color: var(--ctp-text) !important;
+    --yt-lightsource-secondary-title-color: var(--ctp-subtext0) !important;
+    --yt-active-playlist-panel-background-color: var(--ctp-surface0) !important;
+  }
+  .ytAttributedStringHighlightTextDecorator { background-color: var(--ctp-surface1) !important; }
+  .ytAttributedStringLinkCallToActionColor, a.yt-simple-endpoint.yt-formatted-string { color: var(--ctp-accent) !important; }
+
+  /* Thumbnails: badges and hover */
+  .ytBadgeShapeThumbnailDefault, .ytBadgeShapeThumbnailDefaultRedesign,
+  ytd-thumbnail-overlay-time-status-renderer, .badge-shape-wiz--thumbnail-default {
+    background: color-mix(in srgb, var(--ctp-crust) 80%, transparent) !important;
+    color: var(--ctp-text) !important;
+  }
+  .ytBadgeShapeThumbnailLive, ytd-thumbnail-overlay-time-status-renderer[overlay-style="LIVE"],
+  .badge-style-type-live-now-alternate {
+    background: var(--ctp-accent) !important;
+    color: var(--ctp-crust) !important;
+  }
+  .ytSpecTouchFeedbackShapeHoverEffect { background-color: var(--ctp-surface0) !important; }
+
+  /* Avatars: live ring */
+  .ytSpecAvatarShapeLiveRing::after { background: var(--ctp-accent) !important; }
+  .ytSpecAvatarShapeLiveBadge { background-color: var(--ctp-accent) !important; color: var(--ctp-crust) !important; }
+
+  /* Notification badge */
+  .ytSpecIconBadgeShapeTypeNotification .ytSpecIconBadgeShapeBadge, .yt-spec-icon-badge-shape__badge {
+    background-color: var(--ctp-accent) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  /* Switches */
+  .ytSwitchShapeTrack { background-color: var(--ctp-surface2) !important; }
+  .ytSwitchShapeTrackActive { background-color: var(--ctp-accent) !important; }
+  .ytSwitchShapeKnob { background-color: var(--ctp-text) !important; }
+
+  /* Loading skeletons */
+  #home-page-skeleton, #guide-skeleton, #home-container-skeleton, #home-chips, .watch-skeleton {
+    background-color: var(--ctp-base) !important;
+  }
+  #guide-skeleton .guide-ghost-icon, #guide-skeleton .guide-ghost-text, .masthead-skeleton-icon,
+  #home-page-skeleton .skeleton-bg-color, .watch-skeleton .skeleton-bg-color, .skeleton-bg-color {
+    background-color: var(--ctp-surface0) !important;
+  }
+
+  /* SponsorBlock segments, if the extension is installed */
+  :root {
+    --sb-category-sponsor: var(--ctp-green) !important;
+    --sb-category-selfpromo: var(--ctp-yellow) !important;
+    --sb-category-exclusive_access: var(--ctp-teal) !important;
+    --sb-category-interaction: var(--ctp-mauve) !important;
+    --sb-category-poi_highlight: var(--ctp-pink) !important;
+    --sb-category-intro: var(--ctp-sky) !important;
+    --sb-category-outro: var(--ctp-accent) !important;
+    --sb-category-preview: var(--ctp-sapphire) !important;
+    --sb-category-filler: var(--ctp-lavender) !important;
+    --sb-category-music_offtopic: var(--ctp-peach) !important;
+  }
+}

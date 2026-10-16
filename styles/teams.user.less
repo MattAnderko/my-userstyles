@@ -1,0 +1,393 @@
+/* ==UserStyle==
+@name           Teams Catppuccin
+@namespace      github.com/MattAnderko/my-userstyles
+@homepageURL    https://github.com/MattAnderko/my-userstyles
+@supportURL     https://github.com/MattAnderko/my-userstyles/issues
+@updateURL      https://raw.githubusercontent.com/MattAnderko/my-userstyles/main/styles/teams.user.less
+@version        1.0.0
+@author         Máté Anderko
+@description    Catppuccin for Microsoft Teams on the web
+@license        MIT
+@preprocessor   less
+@var select flavor "Flavor" ["latte:Latte", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha*"]
+@var select accentColor "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "blue:Blue*", "sapphire:Sapphire", "sky:Sky", "lavender:Lavender"]
+==/UserStyle== */
+
+/*
+  Colours
+  -------
+  Every rule below uses the 26 Catppuccin roles as CSS variables (--ctp-base, --ctp-text,
+  --ctp-surface0, ...) plus --ctp-accent. They are set once, in the #palette mixin at the top
+  of the @-moz-document block, from the Catppuccin library: pick the flavour and accent in
+  Stylus's style settings.
+
+  Using another theme (Gruvbox, Nord, Tokyo Night, ...): replace the body of #palette with your
+  own colours for the same roles, e.g.
+
+    #palette() {
+      --ctp-base: #282828;   --ctp-mantle: #1d2021;  --ctp-crust: #141617;
+      --ctp-surface0: #3c3836; --ctp-surface1: #504945; --ctp-surface2: #665c54;
+      --ctp-overlay0: #7c6f64; --ctp-overlay1: #928374; --ctp-overlay2: #a89984;
+      --ctp-subtext0: #bdae93; --ctp-subtext1: #d5c4a1; --ctp-text: #ebdbb2;
+      --ctp-accent: #83a598;  ...and the accents (red, green, yellow, blue, mauve, ...)
+    }
+
+  base/mantle/crust are the page backgrounds (mantle and crust darker), surface0-2 raised
+  surfaces and borders, overlay0-2 muted text, subtext/text the text colours.
+*/
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("teams.microsoft.com"), domain("teams.cloud.microsoft"), domain("teams.live.com") {
+
+  :root {
+    #palette();
+  }
+
+  #palette() {
+    #lib.palette();
+    #lib.css-variables();
+    --ctp-accent: @accent;
+
+    // Message loading skeleton: Teams draws it as an inline SVG, so it is rebuilt from the palette
+    // (incoming bubbles surface0, your own messages accent-tinted base, bars and avatars surface1).
+    @skel-bubble: escape(~"@{surface0}");
+    @skel-own: escape(~"@{skel-own-c}");
+    @skel-own-c: mix(@accent, @base, 15%);
+    @skel-bar: escape(~"@{surface1}");
+    [data-testid="vl-placeholders"] {
+      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='340px'><svg width='40%' x='42px' y='16px'><rect width='100%' height='52px' rx='4px' ry='4px' fill='@{skel-bubble}' /><svg x='16px' y='12px'><rect width='60%' height='10px' rx='2px' ry='2px' fill='@{skel-bar}' /><rect width='80%' height='10px' y='18px' rx='2px' ry='2px' fill='@{skel-bar}' /></svg></svg><circle cx='16px' cy='42px' r='16px' fill='@{skel-bar}' /><svg width='70%' x='42px' y='70px'><rect width='100%' height='32px' rx='4px' ry='4px' fill='@{skel-bubble}'/><svg x='16px' y='12px'><rect width='90%' height='10px' rx='2px' ry='2px' fill='@{skel-bar}' /></svg></svg><svg width='60%' x='calc(40% - 74px)' y='118px'><rect width='100%' height='52px' rx='4px' ry='4px' fill='@{skel-own}' /><svg x='16px' y='12px'><rect width='60%' height='10px' rx='2px' ry='2px' fill='@{skel-bar}' /><rect width='80%' height='10px' y='18px' rx='2px' ry='2px' fill='@{skel-bar}' /></svg></svg><svg width='70%' x='calc(30% - 74px)' y='172px'><rect width='100%' height='32px' rx='4px' ry='4px' fill='@{skel-own}'/><svg x='16px' y='12px'><rect width='90%' height='10px' rx='2px' ry='2px' fill='@{skel-bar}' /></svg></svg><svg width='45%' x='42px' y='220px'><rect width='100%' height='52px' rx='4px' ry='4px' fill='@{skel-bubble}' /><svg x='16px' y='12px'><rect width='60%' height='10px' rx='2px' ry='2px' fill='@{skel-bar}' /><rect width='80%' height='10px' y='18px' rx='2px' ry='2px' fill='@{skel-bar}' /></svg></svg><circle cx='16px' cy='246px' r='16px' fill='@{skel-bar}' /><svg width='45%' x='calc(55% - 74px)' y='288px'><rect width='100%' height='52px' rx='4px' ry='4px' fill='@{skel-own}' /><svg x='16px' y='12px'><rect width='60%' height='10px' rx='2px' ry='2px' fill='@{skel-bar}' /><rect width='80%' height='10px' y='18px' rx='2px' ry='2px' fill='@{skel-bar}' /></svg></svg></svg>") !important;
+    }
+  }
+
+
+  /* Teams injects its Fluent UI theme at runtime onto <html> and every Fluent provider element.
+     An !important stylesheet value beats those in any Teams theme (light, dark, classic). */
+  :root,
+  .fui-FluentProvider,
+  [class*="fui-FluentProvider"] {
+    color-scheme: dark !important;
+
+    /* Teams shell: title bar and loading screen */
+    --themeTitleBarBackgroundColor: var(--ctp-crust) !important;
+    --themeTitleBarColor: var(--ctp-subtext0) !important;
+    --themeTitleBarButtonColor: var(--ctp-subtext0) !important;
+    --themeTitleBarButtonHoverBackgroundColor: var(--ctp-surface0) !important;
+    --themeTitleBarButtonHoverColor: var(--ctp-text) !important;
+    --themeBackgroundColor: var(--ctp-crust) !important;
+    --themeColor: var(--ctp-text) !important;
+    --themeLoadingScreenColor: var(--ctp-base) !important;
+    --themeCarouselTextColor: var(--ctp-subtext0) !important;
+    --preload-title-bar-background-color: var(--ctp-crust) !important;
+
+    /* Message composer (CKEditor) */
+    --ck-color-base-background: transparent !important;
+    --ck-color-base-border: var(--ctp-surface1) !important;
+    --ck-color-base-text: var(--ctp-text) !important;
+    --ck-color-text: var(--ctp-text) !important;
+    --ck-color-engine-placeholder-text: var(--ctp-overlay1) !important;
+    --ck-color-list-background: var(--ctp-mantle) !important;
+    --ck-color-button-default-hover-background: var(--ctp-surface0) !important;
+    --ck-color-button-on-color: var(--ctp-accent) !important;
+    --ck-color-focus-border: var(--ctp-lavender) !important;
+    --ck-color-editable-blur-selection: var(--ctp-surface1) !important;
+    --ck-color-widget-editable-focus-background: var(--ctp-surface0) !important;
+    --ck-color-selector-focused-cell-background: color-mix(in srgb, var(--ctp-accent) 15%, transparent) !important;
+    --ck-table-selected-cell-background: color-mix(in srgb, var(--ctp-accent) 20%, transparent) !important;
+    --ck-color-resizer: var(--ctp-accent) !important;
+    --ck-color-shadow-drop: color-mix(in srgb, var(--ctp-crust) 30%, transparent) !important;
+    --ck-color-shadow-drop-active: color-mix(in srgb, var(--ctp-crust) 40%, transparent) !important;
+    --ck-color-shadow-inner: color-mix(in srgb, var(--ctp-crust) 10%, transparent) !important;
+
+    /* Fluent UI tokens */
+    --colorNeutralForeground1: var(--ctp-text) !important;
+    --colorNeutralForeground1Hover: var(--ctp-text) !important;
+    --colorNeutralForeground1Pressed: var(--ctp-text) !important;
+    --colorNeutralForeground1Selected: var(--ctp-text) !important;
+    --colorNeutralForeground1BrandHover: var(--ctp-accent) !important;
+    --colorNeutralForeground1BrandPressed: var(--ctp-accent) !important;
+    --colorNeutralForeground1BrandSelected: var(--ctp-accent) !important;
+    --colorNeutralForeground2: var(--ctp-subtext1) !important;
+    --colorNeutralForeground2Hover: var(--ctp-subtext1) !important;
+    --colorNeutralForeground2Pressed: var(--ctp-subtext1) !important;
+    --colorNeutralForeground2Selected: var(--ctp-subtext1) !important;
+    --colorNeutralForeground2BrandHover: var(--ctp-accent) !important;
+    --colorNeutralForeground2BrandPressed: var(--ctp-accent) !important;
+    --colorNeutralForeground2BrandSelected: var(--ctp-accent) !important;
+    --colorNeutralForeground3: var(--ctp-subtext0) !important;
+    --colorNeutralForeground3Hover: var(--ctp-subtext0) !important;
+    --colorNeutralForeground3Pressed: var(--ctp-subtext0) !important;
+    --colorNeutralForeground3Selected: var(--ctp-subtext0) !important;
+    --colorNeutralForeground3BrandHover: var(--ctp-accent) !important;
+    --colorNeutralForeground3BrandPressed: var(--ctp-accent) !important;
+    --colorNeutralForeground3BrandSelected: var(--ctp-accent) !important;
+    --colorNeutralForeground4: var(--ctp-overlay1) !important;
+    --colorNeutralForeground4Hover: var(--ctp-overlay1) !important;
+    --colorNeutralForeground4Pressed: var(--ctp-overlay1) !important;
+    --colorNeutralForeground4Selected: var(--ctp-overlay1) !important;
+    --colorNeutralForeground4BrandHover: var(--ctp-accent) !important;
+    --colorNeutralForeground4BrandPressed: var(--ctp-accent) !important;
+    --colorNeutralForeground4BrandSelected: var(--ctp-accent) !important;
+    --colorNeutralForeground: var(--ctp-text) !important;
+    --colorNeturalForeground1: var(--ctp-text) !important;
+    --colorNeturalForeground2: var(--ctp-subtext1) !important;
+    --colorNeutralPrimaryAlt: var(--ctp-subtext1) !important;
+    --colorNeutralForeground1Static: var(--ctp-text) !important;
+    --colorNeutralForeground2Link: var(--ctp-subtext1) !important;
+    --colorNeutralForeground2LinkHover: var(--ctp-text) !important;
+    --colorNeutralForeground2LinkPressed: var(--ctp-text) !important;
+    --colorNeutralForeground2LinkSelected: var(--ctp-text) !important;
+    --colorNeutralForegroundDisabled: var(--ctp-overlay0) !important;
+    --colorNeutralForegroundInvertedDisabled: var(--ctp-overlay0) !important;
+    --colorNeutralForegroundOnBrand: var(--ctp-crust) !important;
+    --colorNeutralForegroundStaticInverted: var(--ctp-crust) !important;
+    --colorNeutralForegroundInverted: var(--ctp-crust) !important;
+    --colorNeutralForegroundInvertedHover: var(--ctp-crust) !important;
+    --colorNeutralForegroundInvertedPressed: var(--ctp-crust) !important;
+    --colorNeutralForegroundInvertedSelected: var(--ctp-crust) !important;
+    --colorNeutralForegroundInverted2: var(--ctp-crust) !important;
+    --colorNeutralForegroundInvertedLink: var(--ctp-accent) !important;
+    --colorNeutralForegroundInvertedLinkHover: var(--ctp-lavender) !important;
+    --colorNeutralForegroundInvertedLinkPressed: var(--ctp-lavender) !important;
+    --colorNeutralForegroundInvertedLinkSelected: var(--ctp-lavender) !important;
+    --colorBrandForegroundLink: var(--ctp-accent) !important;
+    --colorBrandForegroundLinkHover: var(--ctp-lavender) !important;
+    --colorBrandForegroundLinkPressed: var(--ctp-sapphire) !important;
+    --colorBrandForegroundLinkSelected: var(--ctp-accent) !important;
+    --colorCompoundBrandForeground1: var(--ctp-accent) !important;
+    --colorCompoundBrandForeground1Hover: var(--ctp-lavender) !important;
+    --colorCompoundBrandForeground1Pressed: var(--ctp-sapphire) !important;
+    --colorBrandForeground1: var(--ctp-accent) !important;
+    --colorBrandForeground1Hover: var(--ctp-lavender) !important;
+    --colorBrandForeground1Pressed: var(--ctp-sapphire) !important;
+    --colorBrandForeground1Selected: var(--ctp-accent) !important;
+    --colorBrandForeground2: var(--ctp-accent) !important;
+    --colorBrandForeground2Hover: var(--ctp-lavender) !important;
+    --colorBrandForeground2Pressed: var(--ctp-sapphire) !important;
+    --colorBrandForegroundOnLight: var(--ctp-accent) !important;
+    --colorBrandForegroundOnLightHover: var(--ctp-lavender) !important;
+    --colorBrandForegroundOnLightPressed: var(--ctp-sapphire) !important;
+    --colorBrandForegroundOnLightSelected: var(--ctp-accent) !important;
+    --colorBrandForegroundInverted: var(--ctp-accent) !important;
+    --colorBrandForegroundInvertedHover: var(--ctp-lavender) !important;
+    --colorBrandForegroundInvertedPressed: var(--ctp-sapphire) !important;
+    --colorNeutralForegroundInvertedBrand: var(--ctp-accent) !important;
+    --colorNeutralBackground1: var(--ctp-base) !important;
+    --colorNeutralBackground1Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground1Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground1Selected: var(--ctp-surface1) !important;
+    --colorNeutralBackground2: var(--ctp-mantle) !important;
+    --colorNeutralBackground2Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground2Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground2Selected: var(--ctp-surface1) !important;
+    --colorNeutralBackground3: var(--ctp-mantle) !important;
+    --colorNeutralBackground3Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground3Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground3Selected: var(--ctp-surface1) !important;
+    --colorNeutralBackground4: var(--ctp-crust) !important;
+    --colorNeutralBackground4Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground4Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground4Selected: var(--ctp-surface1) !important;
+    --colorNeutralBackground5: var(--ctp-crust) !important;
+    --colorNeutralBackground5Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground5Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground5Selected: var(--ctp-surface1) !important;
+    --colorNeutralBackground6: var(--ctp-surface0) !important;
+    --colorNeutralBackground6Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground6Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground6Selected: var(--ctp-surface1) !important;
+    --colorNeutralBackgroundStatic: var(--ctp-surface0) !important;
+    --colorNeutralBackgroundInverted: var(--ctp-text) !important;
+    --colorNeutralBackgroundDisabled: var(--ctp-mantle) !important;
+    --colorNeutralBackgroundInvertedDisabled: var(--ctp-surface0) !important;
+    --colorNeutralBackgroundAlpha: color-mix(in srgb, var(--ctp-base) 50%, transparent) !important;
+    --colorNeutralBackgroundAlpha2: color-mix(in srgb, var(--ctp-base) 80%, transparent) !important;
+    --colorNeutralBackgroundInvertedTransparent4: color-mix(in srgb, var(--ctp-text) 4%, transparent) !important;
+    --colorNeutralBackgroundInvertedTransparent5: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+    --colorSubtleBackground: transparent !important;
+    --colorSubtleBackgroundHover: var(--ctp-surface0) !important;
+    --colorSubtleBackgroundPressed: var(--ctp-surface1) !important;
+    --colorSubtleBackgroundSelected: var(--ctp-surface0) !important;
+    --colorSubtleBackgroundLightAlphaHover: color-mix(in srgb, var(--ctp-surface0) 70%, transparent) !important;
+    --colorSubtleBackgroundLightAlphaPressed: color-mix(in srgb, var(--ctp-surface1) 50%, transparent) !important;
+    --colorSubtleBackgroundInverted: transparent !important;
+    --colorSubtleBackgroundInvertedHover: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --colorSubtleBackgroundInvertedPressed: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --colorSubtleBackgroundInvertedSelected: color-mix(in srgb, var(--ctp-text) 10%, transparent) !important;
+    --colorTransparentBackground: transparent !important;
+    --colorTransparentBackgroundHover: transparent !important;
+    --colorTransparentBackgroundPressed: transparent !important;
+    --colorTransparentBackgroundSelected: transparent !important;
+    --colorBackgroundOverlay: color-mix(in srgb, var(--ctp-crust) 60%, transparent) !important;
+    --colorScrollbarOverlay: var(--ctp-surface2) !important;
+    --colorBrandBackground: var(--ctp-accent) !important;
+    --colorBrandBackgroundHover: var(--ctp-lavender) !important;
+    --colorBrandBackgroundPressed: var(--ctp-sapphire) !important;
+    --colorBrandBackgroundSelected: var(--ctp-lavender) !important;
+    --colorCompoundBrandBackground: var(--ctp-accent) !important;
+    --colorCompoundBrandBackgroundHover: var(--ctp-lavender) !important;
+    --colorCompoundBrandBackgroundPressed: var(--ctp-sapphire) !important;
+    --colorBrandBackgroundStatic: var(--ctp-accent) !important;
+    --colorBrandBackground2: color-mix(in srgb, var(--ctp-accent) 15%, var(--ctp-base)) !important;
+    --colorBrandBackground2Hover: color-mix(in srgb, var(--ctp-accent) 22%, var(--ctp-base)) !important;
+    --colorBrandBackground2Pressed: color-mix(in srgb, var(--ctp-accent) 30%, var(--ctp-base)) !important;
+    --colorBrandBackground3Static: var(--ctp-accent) !important;
+    --colorBrandBackground4Static: var(--ctp-lavender) !important;
+    --colorBrandBackgroundInverted: var(--ctp-accent) !important;
+    --colorBrandBackgroundInvertedHover: var(--ctp-lavender) !important;
+    --colorBrandBackgroundInvertedPressed: var(--ctp-sapphire) !important;
+    --colorBrandBackgroundInvertedSelected: var(--ctp-lavender) !important;
+    --colorNeutralStrokeAccessible: var(--ctp-overlay0) !important;
+    --colorNeutralStrokeAccessibleHover: var(--ctp-overlay1) !important;
+    --colorNeutralStrokeAccessiblePressed: var(--ctp-overlay2) !important;
+    --colorNeutralStrokeAccessibleSelected: var(--ctp-accent) !important;
+    --colorNeutralStroke1: var(--ctp-surface1) !important;
+    --colorNeutralStroke1Hover: var(--ctp-surface2) !important;
+    --colorNeutralStroke1Pressed: var(--ctp-overlay0) !important;
+    --colorNeutralStroke1Selected: var(--ctp-surface2) !important;
+    --colorNeutralStroke2: var(--ctp-surface0) !important;
+    --colorNeutralStroke3: var(--ctp-surface0) !important;
+    --colorNeutralStrokeSubtle: var(--ctp-surface0) !important;
+    --colorNeutralStrokeOnBrand: var(--ctp-base) !important;
+    --colorNeutralStrokeOnBrand2: var(--ctp-base) !important;
+    --colorNeutralStrokeDisabled: var(--ctp-surface0) !important;
+    --colorNeutralStrokeInvertedDisabled: var(--ctp-surface0) !important;
+    --colorNeutralStrokeAlpha: color-mix(in srgb, var(--ctp-text) 8%, transparent) !important;
+    --colorNeutralStrokeAlpha2: color-mix(in srgb, var(--ctp-text) 15%, transparent) !important;
+    --colorBrandStroke1: var(--ctp-accent) !important;
+    --colorBrandStroke2: color-mix(in srgb, var(--ctp-accent) 40%, var(--ctp-base)) !important;
+    --colorBrandStroke2Hover: color-mix(in srgb, var(--ctp-accent) 55%, var(--ctp-base)) !important;
+    --colorBrandStroke2Pressed: var(--ctp-accent) !important;
+    --colorBrandStroke2Contrast: color-mix(in srgb, var(--ctp-accent) 40%, var(--ctp-base)) !important;
+    --colorCompoundBrandStroke: var(--ctp-accent) !important;
+    --colorCompoundBrandStrokeHover: var(--ctp-lavender) !important;
+    --colorCompoundBrandStrokePressed: var(--ctp-sapphire) !important;
+    --colorTransparentStroke: transparent !important;
+    --colorTransparentStrokeInteractive: transparent !important;
+    --colorTransparentStrokeDisabled: transparent !important;
+    --colorStrokeFocus1: var(--ctp-base) !important;
+    --colorStrokeFocus2: var(--ctp-lavender) !important;
+    --colorNeutralShadowAmbient: color-mix(in srgb, var(--ctp-crust) 24%, transparent) !important;
+    --colorNeutralShadowKey: color-mix(in srgb, var(--ctp-crust) 28%, transparent) !important;
+    --colorNeutralShadowAmbientLighter: color-mix(in srgb, var(--ctp-crust) 12%, transparent) !important;
+    --colorNeutralShadowKeyLighter: color-mix(in srgb, var(--ctp-crust) 14%, transparent) !important;
+    --colorNeutralShadowAmbientDarker: color-mix(in srgb, var(--ctp-crust) 40%, transparent) !important;
+    --colorNeutralShadowKeyDarker: color-mix(in srgb, var(--ctp-crust) 48%, transparent) !important;
+    --colorBrandShadowAmbient: color-mix(in srgb, var(--ctp-crust) 30%, transparent) !important;
+    --colorBrandShadowKey: color-mix(in srgb, var(--ctp-crust) 25%, transparent) !important;
+    --colorStatusDangerBackground1: color-mix(in srgb, var(--ctp-red) 10%, var(--ctp-base)) !important;
+    --colorStatusDangerBackground2: color-mix(in srgb, var(--ctp-red) 20%, var(--ctp-base)) !important;
+    --colorStatusDangerBackground3: var(--ctp-red) !important;
+    --colorStatusDangerBackground3Hover: var(--ctp-red) !important;
+    --colorStatusDangerBackground3Pressed: var(--ctp-red) !important;
+    --colorStatusDangerForeground1: var(--ctp-red) !important;
+    --colorStatusDangerForeground2: var(--ctp-red) !important;
+    --colorStatusDangerForeground3: var(--ctp-red) !important;
+    --colorStatusDangerForegroundInverted: var(--ctp-red) !important;
+    --colorStatusDangerBorder1: var(--ctp-red) !important;
+    --colorStatusDangerBorder2: var(--ctp-red) !important;
+    --colorStatusDangerBorderActive: var(--ctp-red) !important;
+    --colorStatusSuccessBackground1: color-mix(in srgb, var(--ctp-green) 10%, var(--ctp-base)) !important;
+    --colorStatusSuccessBackground2: color-mix(in srgb, var(--ctp-green) 20%, var(--ctp-base)) !important;
+    --colorStatusSuccessBackground3: var(--ctp-green) !important;
+    --colorStatusSuccessBackground3Hover: var(--ctp-green) !important;
+    --colorStatusSuccessBackground3Pressed: var(--ctp-green) !important;
+    --colorStatusSuccessForeground1: var(--ctp-green) !important;
+    --colorStatusSuccessForeground2: var(--ctp-green) !important;
+    --colorStatusSuccessForeground3: var(--ctp-green) !important;
+    --colorStatusSuccessForegroundInverted: var(--ctp-green) !important;
+    --colorStatusSuccessBorder1: var(--ctp-green) !important;
+    --colorStatusSuccessBorder2: var(--ctp-green) !important;
+    --colorStatusSuccessBorderActive: var(--ctp-green) !important;
+    --colorStatusWarningBackground1: color-mix(in srgb, var(--ctp-yellow) 10%, var(--ctp-base)) !important;
+    --colorStatusWarningBackground2: color-mix(in srgb, var(--ctp-yellow) 20%, var(--ctp-base)) !important;
+    --colorStatusWarningBackground3: var(--ctp-yellow) !important;
+    --colorStatusWarningBackground3Hover: var(--ctp-yellow) !important;
+    --colorStatusWarningBackground3Pressed: var(--ctp-yellow) !important;
+    --colorStatusWarningForeground1: var(--ctp-yellow) !important;
+    --colorStatusWarningForeground2: var(--ctp-yellow) !important;
+    --colorStatusWarningForeground3: var(--ctp-peach) !important;
+    --colorStatusWarningForegroundInverted: var(--ctp-yellow) !important;
+    --colorStatusWarningBorder1: var(--ctp-yellow) !important;
+    --colorStatusWarningBorder2: var(--ctp-yellow) !important;
+    --colorNeutralStencil1: var(--ctp-surface0) !important;
+    --colorNeutralStencil2: var(--ctp-surface1) !important;
+    --colorNeutralStencil1Alpha: color-mix(in srgb, var(--ctp-text) 8%, transparent) !important;
+    --colorNeutralStencil2Alpha: color-mix(in srgb, var(--ctp-text) 14%, transparent) !important;
+    --colorStatusWarningBorderActive: var(--ctp-yellow) !important;
+  }
+
+  body {
+    background-color: var(--ctp-crust) !important;
+    color: var(--ctp-text);
+  }
+
+  /* Panes Teams paints with its own colours instead of Fluent tokens. Hooked by data-tid /
+     data-testid, which stay stable while the generated class names change. */
+  :is([data-tid], [data-testid]):is(
+    [data-tid="app-layout-area--mid-nav"],
+    [data-tid="app-layout-area--sub-nav"],
+    [data-tid="simple-collab-rail"], [data-testid="simple-collab-rail"],
+    [data-testid="simple-collab-left-rail-header"],
+    [data-testid="simple-collab-left-rail-sticky-filter-v2"],
+    [data-tid="activity-list-container"], [data-testid="activity-list-container"],
+    [data-tid="default-feed-header"], [data-testid="default-feed-header"],
+    [data-testid="filter-toolbar"]
+  ) {
+    background-color: var(--ctp-mantle) !important;
+  }
+
+  :is([data-tid], [data-testid]):is(
+    [data-tid="app-layout-area--header"],
+    [data-tid="entity-header"], [data-testid="entity-header"],
+    [data-tid="app-layout-area--main"],
+    [data-tid="app-layout-area--end"]
+  ) {
+    background-color: var(--ctp-base) !important;
+  }
+
+  [data-tid="app-layout-area--header"] {
+    border-bottom: 1px solid var(--ctp-surface0) !important;
+  }
+
+  [data-tid="app-layout-area--nav"],
+  [data-tid="app-bar-wrapper"],
+  [data-tid="app-layout-area--title-bar"],
+  [data-tid="title-bar"] {
+    background-color: var(--ctp-crust) !important;
+  }
+
+  /* Teams draws the divider under the title bar with a token that maps to the text colour, which
+     turns it into a bright line; whichever side draws it, it becomes a quiet surface0 line. */
+  [data-tid="app-layout-area--title-bar"],
+  [data-tid="title-bar"],
+  [data-tid="pre-core-title-bar"] {
+    border-bottom-color: var(--ctp-surface0) !important;
+    box-shadow: none !important;
+  }
+  [data-tid="app-layout-area--nav"],
+  [data-tid="app-layout-area--mid-nav"],
+  [data-tid="app-layout-area--sub-nav"],
+  [data-tid="app-layout-area--unified-areas"],
+  [data-tid="app-layout-area--header"],
+  [data-tid="app-layout-area--main"] {
+    border-top-color: var(--ctp-surface0) !important;
+  }
+  [data-tid="app-layout-area--title-bar"]::after,
+  [data-tid="title-bar"]::after,
+  [data-tid="app-layout-area--title-bar"]::before,
+  [data-tid="title-bar"]::before {
+    background-color: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface0) !important;
+  }
+
+
+  ::selection {
+    background: color-mix(in srgb, var(--ctp-accent) 35%, transparent);
+    color: var(--ctp-text);
+  }
+
+  * {
+    scrollbar-color: var(--ctp-surface2) transparent;
+  }
+}

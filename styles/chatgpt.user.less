@@ -1,0 +1,469 @@
+/* ==UserStyle==
+@name ChatGPT Catppuccin (current tokens)
+@namespace      github.com/MattAnderko/my-userstyles
+@homepageURL    https://github.com/MattAnderko/my-userstyles
+@supportURL     https://github.com/MattAnderko/my-userstyles/issues
+@updateURL      https://raw.githubusercontent.com/MattAnderko/my-userstyles/main/styles/chatgpt.user.less
+@version        1.0.0
+@author         Máté Anderko (based on catppuccin/userstyles, MIT)
+@description Catppuccin for ChatGPT, based on catppuccin/userstyles, extended to the current token system
+@license MIT
+
+@preprocessor  less
+@var select lightFlavor "Light Flavor" ["latte:Latte*", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha"]
+@var select darkFlavor "Dark Flavor" ["latte:Latte", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha*"]
+@var select accentColor "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "blue:Blue*", "sapphire:Sapphire", "sky:Sky", "lavender:Lavender", "subtext0:Gray"]
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("chatgpt.com") {
+  // TODO: Codemirror syntax highlighting.
+
+  // ChatGPT now marks the theme with data-theme on <html>; the .light/.dark classes only appear on a
+  // few elements, so both are matched.
+  .light,
+  [data-theme="light"] {
+    #catppuccin(@lightFlavor);
+  }
+
+  .dark,
+  [data-theme="dark"] {
+    #catppuccin(@darkFlavor);
+  }
+
+  #catppuccin(@flavor) {
+    #lib.palette();
+    #lib.defaults();
+
+    // The theme element itself (usually <html>) paints the page edges.
+    background-color: @base;
+
+    // Surfaces ChatGPT paints outside the tokens
+    .app-shell-left-panel,
+    nav.group\/sidebar-rail {
+      background-color: @mantle !important;
+    }
+    .CodeSurface-UAMd1A {
+      background-color: @mantle !important;
+      background-image: none !important;
+      border-color: @surface0 !important;
+    }
+    .StickyActionBar-RZfVQh {
+      background-color: @mantle !important;
+      background-image: none !important;
+    }
+    // Code inside a code block: the inline-code rule (code:not(pre > code)) also catches blocks
+    // where <code> is nested deeper, e.g. plain text, and paints a lighter box inside the card.
+    .CodeSurface-UAMd1A code,
+    .CodeSurface-UAMd1A pre,
+    pre code {
+      background-color: transparent !important;
+    }
+
+    * {
+      --text-primary: @text;
+      --text-secondary: @subtext1;
+      --text-tertiary: @subtext0;
+      --text-quaternary: @overlay2;
+      --bg-primary: @base;
+      --bg-secondary: @surface0;
+      --bg-tertiary: @surface1;
+
+      --bg-secondary-surface: @mantle; // sidebar
+
+      --bg-elevated-primary: @base; // settings main panel
+      --bg-elevated-secondary: @mantle;
+
+      --bg-tooltip: @crust;
+
+      --main-surface-primary: @base;
+      --main-surface-secondary: @surface0;
+      --main-surface-tertiary: @surface1;
+      --interactive-bg-secondary-hover: @surface1;
+      --interactive-bg-secondary-press: @surface0;
+
+      --interactive-label-accent-default: @accent; // some dropdowns in settings
+
+      --border-light: @surface0;
+      --border-default: @surface1;
+      --border-medium: @surface2;
+      --interactive-border-focus: @overlay0;
+
+      --theme-user-msg-bg: @surface0;
+      --theme-user-msg-text: @text;
+      --theme-submit-btn-bg: @accent;
+      --theme-submit-btn-text: @base;
+
+      --theme-secondary-btn-bg: @surface1;
+      --theme-secondary-btn-text: @text;
+
+      --sidebar-surface: @mantle; // modal backgrounds
+      --sidebar-surface-primary: @mantle; // syntax highlighted code block backgrounds
+
+      --surface-hover: @surface0; // some button hovers
+
+      --icon-tertiary: @overlay2;
+
+      --text-status-error: @red;
+
+      // chat input prompt border
+      --shadow-color-1: fade(@mantle, 50%);
+      --shadow-color-2: fade(@text, 80%);
+
+      // Current token system (--color-*, --app-color-*, --gray-*, --alpha-*, palette ramps).
+      // Generated from ChatGPT's stylesheets: only tokens the page reads, aliases left to follow
+      // their targets, each literal dark value mapped to the nearest Catppuccin role.
+      --alpha-02: fade(@text, 2%) !important;
+      --alpha-04: fade(@text, 4%) !important;
+      --alpha-05: fade(@text, 5%) !important;
+      --alpha-06: fade(@text, 6%) !important;
+      --alpha-08: fade(@text, 8%) !important;
+      --alpha-10: fade(@text, 10%) !important;
+      --alpha-12: fade(@text, 12%) !important;
+      --alpha-15: fade(@text, 15%) !important;
+      --alpha-16: fade(@text, 16%) !important;
+      --alpha-20: fade(@text, 20%) !important;
+      --alpha-25: fade(@text, 25%) !important;
+      --alpha-30: fade(@text, 30%) !important;
+      --alpha-50: fade(@text, 50%) !important;
+      --alpha-base: @text !important;
+      --app-color-accent-blue: @accent !important;
+      --app-color-accent-purple: @lavender !important;
+      --app-color-ads-background-secondary: @surface0 !important;
+      --app-color-ads-background-secondary-press: fade(@text, 5%) !important;
+      --app-color-ads-border-medium: fade(@text, 15%) !important;
+      --app-color-ads-text-primary: @text !important;
+      --app-color-background-accent-active: mix(@accent, @base, 38%) !important;
+      --app-color-background-accent-hover: mix(@accent, @base, 32%) !important;
+      --app-color-background-application-menu: @mantle !important;
+      --app-color-background-button-secondary: @surface0 !important;
+      --app-color-background-button-secondary-hover: fade(@text, 10%) !important;
+      --app-color-background-card: @base !important;
+      --app-color-background-elevated-primary: @mantle !important;
+      --app-color-background-elevated-primary-opaque: @mantle !important;
+      --app-color-background-elevated-secondary: @surface0 !important;
+      --app-color-background-elevated-secondary-opaque: @surface0 !important;
+      --app-color-background-elevated-tertiary-opaque: @base !important;
+      --app-color-background-recovery: @base !important;
+      --app-color-background-surface: @crust !important;
+      --app-color-background-surface-under: @crust !important;
+      --app-color-border: fade(@text, 15%) !important;
+      --app-color-border-focus: @accent !important;
+      --app-color-border-heavy: fade(@text, 20%) !important;
+      --app-color-border-light: fade(@text, 5%) !important;
+      --app-color-decoration-added: @green !important;
+      --app-color-decoration-deleted: @red !important;
+      --app-color-editor-added: fade(@green, 23%) !important;
+      --app-color-editor-deleted: fade(@red, 23%) !important;
+      --app-color-icon-primary: @text !important;
+      --app-color-text-accent: @accent !important;
+      --app-color-text-foreground: @text !important;
+      --app-color-text-foreground-secondary: @text !important;
+      --app-color-text-foreground-tertiary: @subtext0 !important;
+      --black: @crust !important;
+      --blue-100: @accent !important;
+      --blue-200: @accent !important;
+      --blue-300: @accent !important;
+      --blue-400: @accent !important;
+      --blue-50: mix(@accent, @text, 35%) !important;
+      --blue-500: @accent !important;
+      --blue-700: mix(@accent, @base, 30%) !important;
+      --blue-800: mix(@accent, @base, 30%) !important;
+      --brand-blue-300: @accent !important;
+      --brand-blue-400: @accent !important;
+      --brand-cyan-400: @accent !important;
+      --brand-gray-300: @subtext0 !important;
+      --brand-green-400: @teal !important;
+      --brand-lime-400: @green !important;
+      --brand-magenta-400: @mauve !important;
+      --brand-orange-400: @red !important;
+      --brand-pink-400: @pink !important;
+      --brand-purple-400: @lavender !important;
+      --brand-red-400: @red !important;
+      --brand-slate-400: @accent !important;
+      --brand-yellow-400: @yellow !important;
+      --button-surface-border-color: fade(@crust, 4%) !important;
+      --chatgpt-blue-100: @accent !important;
+      --chatgpt-blue-200: @accent !important;
+      --codex-base-accent: @accent !important;
+      --color-amber-100: mix(@yellow, @text, 35%) !important;
+      --color-amber-900: mix(@peach, @base, 30%) !important;
+      --color-avatar-purple: @lavender !important;
+      --color-background-accent-action: @accent !important;
+      --color-background-attribution-highlight: fade(@accent, 60%) !important;
+      --color-background-button-outline-hover: @surface0 !important;
+      --color-background-callout-surface: @surface1 !important;
+      --color-background-composer-action-bar: @surface0 !important;
+      --color-background-composer-primary: @accent !important;
+      --color-background-composer-surface: @surface0 !important;
+      --color-background-control-opaque: @surface0 !important;
+      --color-background-mode-toggle-selected: @mantle !important;
+      --color-background-mode-toggle-track: @mantle !important;
+      --color-background-panel: @crust !important;
+      --color-background-primary-ghost-hover: fade(@text, 18%) !important;
+      --color-background-text-selection: fade(@accent, 60%) !important;
+      --color-background-user-message: @surface0 !important;
+      --color-border-button-outline: fade(@text, 15%) !important;
+      --color-chat-accent-red: @red !important;
+      --color-codex-syntax-attribute: @yellow !important;
+      --color-codex-syntax-keyword: @pink !important;
+      --color-codex-syntax-literal: @peach !important;
+      --color-codex-syntax-name: @accent !important;
+      --color-codex-syntax-string: @green !important;
+      --color-codex-syntax-variable: @lavender !important;
+      --color-dialog-overlay: fade(@crust, 13%) !important;
+      --color-slate-100: @text !important;
+      --color-slate-600: @accent !important;
+      --color-slate-700: mix(@accent, @base, 30%) !important;
+      --color-slate-950: mix(@accent, @base, 30%) !important;
+      --color-surface: @base !important;
+      --color-surface-canvas: @base !important;
+      --color-surface-card: @base !important;
+      --color-surface-elevated: @surface0 !important;
+      --color-surface-elevated-secondary: @surface1 !important;
+      --color-surface-recovery: @base !important;
+      --color-surface-secondary: @mantle !important;
+      --color-surface-tertiary: @base !important;
+      --color-text: @text !important;
+      --color-text-accent-action: @text !important;
+      --color-text-button-outline: @text !important;
+      --color-text-composer-primary: @text !important;
+      --color-text-composer-reference: @accent !important;
+      --color-text-emphasis: @text !important;
+      --color-text-mode-toggle-accent: @accent !important;
+      --color-text-mode-toggle-inactive: @text !important;
+      --color-text-mode-toggle-primary: @text !important;
+      --color-text-secondary: @subtext1 !important;
+      --color-text-tertiary: @subtext0 !important;
+      --color-text-user-message: @text !important;
+      --gray-0: @crust !important;
+      --gray-100: @mantle !important;
+      --gray-1000: @text !important;
+      --gray-150: @mantle !important;
+      --gray-200: @base !important;
+      --gray-25: @mantle !important;
+      --gray-300: @surface0 !important;
+      --gray-350: @surface1 !important;
+      --gray-400: @surface1 !important;
+      --gray-450: @surface2 !important;
+      --gray-50: @mantle !important;
+      --gray-500: @surface2 !important;
+      --gray-600: @overlay2 !important;
+      --gray-700: @subtext0 !important;
+      --gray-75: @mantle !important;
+      --gray-800: @text !important;
+      --gray-850: @text !important;
+      --gray-900: @text !important;
+      --gray-950: @text !important;
+      --gray-975: @text !important;
+      --gray-fixed-1000: @crust !important;
+      --gray-fixed-250: @subtext1 !important;
+      --gray-fixed-300: @subtext0 !important;
+      --gray-fixed-450: @overlay0 !important;
+      --gray-fixed-500: @surface2 !important;
+      --gray-fixed-550: @surface2 !important;
+      --gray-fixed-600: @surface1 !important;
+      --gray-fixed-700: @surface0 !important;
+      --gray-fixed-800: @base !important;
+      --green-300: @green !important;
+      --green-400: @green !important;
+      --green-50: mix(@green, @text, 35%) !important;
+      --green-500: @green !important;
+      --green-600: mix(@green, @base, 30%) !important;
+      --green-700: mix(@green, @base, 30%) !important;
+      --green-800: mix(@green, @base, 30%) !important;
+      --green-900: mix(@green, @base, 30%) !important;
+      --messaging-avatar-placeholder: @surface2 !important;
+      --modal-backdrop-background: fade(@crust, 50%) !important;
+      --modal-backdrop-fade-background: fade(@crust, 50%) !important;
+      --orange-300: @peach !important;
+      --orange-400: @peach !important;
+      --orange-50: mix(@peach, @text, 35%) !important;
+      --orange-500: @peach !important;
+      --orange-600: @peach !important;
+      --orange-700: @peach !important;
+      --pink-400: @pink !important;
+      --pink-500: @pink !important;
+      --purple-200: @lavender !important;
+      --purple-300: @lavender !important;
+      --purple-400: @lavender !important;
+      --purple-50: mix(@lavender, @text, 35%) !important;
+      --purple-500: @lavender !important;
+      --red-200: @red !important;
+      --red-300: @red !important;
+      --red-400: @red !important;
+      --red-50: mix(@red, @text, 35%) !important;
+      --red-500: @red !important;
+      --red-600: @red !important;
+      --red-700: @red !important;
+      --red-800: mix(@red, @base, 30%) !important;
+      --shadow-hairline-color: fade(@text, 12%) !important;
+      --white: @text !important;
+      --yellow-100: @yellow !important;
+      --yellow-25: @text !important;
+      --yellow-300: @yellow !important;
+      --yellow-400: @yellow !important;
+      --yellow-500: @yellow !important;
+      --yellow-600: @yellow !important;
+      --yellow-700: mix(@yellow, @base, 30%) !important;
+      --yellow-800: mix(@yellow, @base, 30%) !important;
+
+      .__menu-item[data-sidebar-item] {
+        --menu-item-highlighted: @surface0;
+      }
+
+      .__menu-item[data-color="danger"] {
+        --menu-item-highlighted: fade(@red, 20%);
+        --menu-item-active: fade(@red, 30%);
+        --menu-item-open: fade(@red, 30%);
+      }
+
+      /* Markdown */
+
+      /* Inline code */
+      code:not(pre > code) {
+        background-color: @surface0;
+      }
+
+      code[class*="language-"],
+      pre[class*="language-"],
+      code.hljs {
+        color: @text !important;
+      }
+
+      /* Components */
+
+      .btn-primary {
+        background-color: @text;
+        color: @base;
+      }
+
+      .btn-purple {
+        color: @base;
+        background-color: @accent;
+
+        &:hover {
+          background-color: lighten(@accent, 5%);
+        }
+
+        &:focus, &:active {
+          background-color: darken(@accent, 5%);
+        }
+      }
+
+      .btn-danger-outline {
+        color: @red;
+        border-color: @red;
+      }
+
+      .btn-ghost {
+        &:not(:disabled) {
+          &:hover {
+            background-color: @surface0;
+          }
+        }
+      }
+
+      /* Dark Overrides */
+      .bg-token-bg-primary {
+        background-color: var(--bg-primary);
+      }
+      .bg-token-main-surface-primary {
+        background-color: var(--main-surface-primary);
+      }
+      .bg-token-sidebar-surface {
+        background-color: var(--sidebar-surface);
+      }
+
+      /* Tailwind Utilities */
+      .__tailwind-utility(@color, @shade, @value) {
+        .text-@{color}-@{shade},
+        .dark\:text-@{color}-@{shade} {
+          color: @value;
+        }
+        .bg-@{color}-@{shade},
+        .dark\:bg-@{color}-@{shade} {
+          background-color: @value;
+        }
+        .border-@{color}-@{shade} {
+          border-color: @value;
+        }
+        .radix-state-checked\:bg-@{color}-@{shade}[data-state="checked"] {
+          background-color: @value;
+        }
+      }
+
+      .__tailwind-utility(green, 600, @green); // confirmation toasts
+      .__tailwind-utility(red, 500, @red); // failure toasts
+      .__tailwind-utility(blue, 400, @accent); // toggled checkmarks
+      .__tailwind-utility(gray, 600, @overlay0); // untoggled checkmarks
+      .__tailwind-utility(gray, 500, @overlay2); // faint text in/and dividers
+
+      .text-white {
+        color: @base;
+      }
+
+      .bg-black {
+        background-color: @mantle;
+      }
+    }
+  }
+}
+
+@-moz-document domain("auth.openai.com") {
+  :root {
+    @media (prefers-color-scheme: light) {
+      #catppuccin(@lightFlavor);
+    }
+    @media (prefers-color-scheme: dark) {
+      #catppuccin(@darkFlavor);
+    }
+  }
+
+  #catppuccin(@flavor) {
+    #lib.palette();
+    #lib.defaults();
+
+    color: @text;
+
+    background-color: @base;
+    --main-page-background: @base;
+
+    // Logo
+    a[href="https://chatgpt.com"] > svg {
+      filter: @text-filter;
+    }
+
+    --text-primary: @text;
+    --text-secondary: @subtext1;
+    --text-tertiary: @subtext0;
+    --text-placeholder: @subtext0; // form field labels above the input (e.g. "Email" and "Password")
+
+    --accent-blue: @accent;
+    --link: @accent;
+
+    --border-medium: @surface2;
+
+    --button-primary-background: @text;
+    --button-primary-hover: @subtext1;
+    --button-text-on-primary: @base;
+
+    --button-outline-hover: @surface0;
+
+    --gray-100: @surface2; // divider lines
+
+    input {
+      color: @text;
+    }
+
+    [class*="_toggleVisibilityButton"]:where(:hover, :focus-visible)::before {
+      background-color: @surface0;
+    }
+
+    [data-overlay-container] [class*="_tooltip"] {
+      --tooltip-background-color: @mantle !important;
+      --tooltip-color: @text !important;
+    }
+  }
+}

@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+# Stylus only installs an update when @version goes up, so bump the patch number of every
+# staged style whose content changed and whose version was not raised by hand.
+import re
+import subprocess
+
+VERSION = re.compile(r"^(@version\s+)(\d+)\.(\d+)\.(\d+)\s*$", re.M)
+
+
+def git(*args):
+    return subprocess.run(["git", *args], capture_output=True, text=True).stdout
+
+
+def version(text):
+    m = VERSION.search(text or "")
+    return tuple(int(x) for x in m.groups()[1:]) if m else None
+
+
+staged = [f for f in git("diff", "--cached", "--name-only", "--diff-filter=AM").splitlines()
+          if f.endswith((".user.less", ".user.css", ".user.styl"))]
+
+for path in staged:
+    new = git("show", f":{path}")
+    old = git("show", f"HEAD:{path}")
+    if not old:
+        continue  # new file keeps the version it was written with
+    if VERSION.sub("", new) == VERSION.sub("", old):
+        continue
+    if version(new) and version(old) and version(new) > version(old):
+        continue
+    major, minor, patch = version(old) or (1, 0, 0)
+    bumped = f"{major}.{minor}.{patch + 1}"
+    with open(path) as f:
+        text = f.read()
+    text = VERSION.sub(lambda m: f"{m.group(1)}{bumped}", text, count=1)
+    with open(path, "w") as f:
+        f.write(text)
+    git("add", path)
+    print(f"{path}: @version {bumped}")
